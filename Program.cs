@@ -1,26 +1,31 @@
 ﻿
 using System;
+using static System.Console;
+using System.IO;
+using chapter;
 
 namespace asss
 {
-         class program
+
+    class Program
     {
+
         static void Main()
         {
-            Console.WriteLine("helloqqqqq,world");
-            Console.WriteLine("aaaaaa");
 
-            int[] num={1,2,3};
-            int a=1,b=2;
-            //Console.Write("bbbbbbb{2} and {1}",num); 不可用
-            //Console.WriteLine("bbbbbbb{2} and {3}\n",1,2,3);  3:抛出异常
-            Console.WriteLine("bbbbbbb{2} and {1}",1,2,3);
-            //格式化数字字符串
-            Console.WriteLine($"{a:C} and {b:f3}");
+           
+
+            Chapter a;
+            //a=new chapter1_7();
+            //a=new chapter9();
+            //a= new chapter10_12();
+            a= new chapter13();
 
 
+            a.f();
+            a.pause();
+  
 
-            
 
         }
     }
