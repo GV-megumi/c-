@@ -5,8 +5,11 @@ using System.IO;
  
 namespace chapter{
 
+    //const int adsaff=1; 报错
+
            class Aa
     {
+        const int adsaff=1;
 
 
         private int reftest = 10;
@@ -17,6 +20,19 @@ namespace chapter{
         public ref int getreftest() { return ref reftest; }
 
 
+
+    }
+
+    class Aaa:Aa
+    {
+        public int x{get;set;}   
+
+        public static implicit operator Aaa(struct1 s)
+        {
+            Aaa aaa=new Aaa();
+            aaa.x=s.x;
+            return aaa;
+        }
 
     }
 
@@ -34,6 +50,8 @@ namespace chapter{
 
 
         }
+
+        public struct1(){}
         static struct1()
         {
             z = 2;
@@ -61,9 +79,9 @@ namespace chapter{
         c,
     }
 
-    public class Chapter {
+    abstract class Chapter {
 
-        public virtual void f(){}
+        public abstract void f();
         public void pause()
         {
             WriteLine("\n按任意键继续");
