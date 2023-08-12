@@ -31,8 +31,14 @@ namespace chapter
                         while (true)
                         {
 
-
+                            try
+                            {
                             key = Console.ReadKey(intercept: true).Key;
+                            }
+                            catch
+                            {
+                                
+                            }
                             clicked = true;
                             if (key == ConsoleKey.F5)
                                 stop();
