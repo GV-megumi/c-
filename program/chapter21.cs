@@ -11,12 +11,13 @@ namespace chapter
 
         ConsoleKey key = ConsoleKey.F5;
         bool clicked = false;
-        int over=0;
+        CancellationTokenSource cts = new();
 
 
 
 
-        async void Readk()
+
+        async Task Readk(CancellationToken c)
         {
 
 
@@ -26,16 +27,24 @@ namespace chapter
 
                     {
 
-                        
+
                         while (true)
                         {
+
 
                             key = Console.ReadKey(intercept: true).Key;
                             clicked = true;
                             if (key == ConsoleKey.F5)
-                                break;
+                                stop();
+                            //break;
+
+                            if (c.IsCancellationRequested)
+                            {
+                                WriteLine("读线程终止");
+                                return;
+                            }
                         }
-                       
+
                     }
 
 
@@ -43,14 +52,13 @@ namespace chapter
             );
 
 
-            WriteLine("读事件线程结束\n\n");
-            over++;
+
 
 
 
         }
 
-        async void Writek()
+        async Task Writek(CancellationToken c)
         {
 
 
@@ -59,32 +67,71 @@ namespace chapter
                 while (true)
                 {
 
+
+                    if (c.IsCancellationRequested)
+                    {
+                        WriteLine("写线程终止");
+                        return;
+                    }
+
                     if (!clicked)
                         continue;
                     else
                     {
-                        if(key == ConsoleKey.F5)
-                        break;
+                        //if (key == ConsoleKey.F5)
+                        //break;
+
                         Write($"       {key}\n");
                         clicked = false;
 
                     }
                 }
-                
+
 
             });
 
-            WriteLine("写事件线程结束\n\n");
-            over++;
+
+
+        }
+
+        async void waitt()
+        {
+            await Task.Run(() =>
+            {
+                Thread.Sleep(5000);
+                cts.Cancel();
+            });
+        }
+
+        async void stop()
+        {
+            await Task.Run(() =>
+            {
+
+                cts.Cancel();
+            });
         }
         public override void f()
         {
-            Readk();
-            Writek();
+
+            //CancellationTokenSource cts=new();
+            CancellationToken token = cts.Token;
+            CancellationToken token1 = cts.Token;
+            Task read = Readk(token);
+            Task write = Writek(token1);
 
             WriteLine("asdadd;");
-            while (over!=2)
-                ;
+            //waitt();
+
+
+
+
+
+            read.Wait();
+            WriteLine("读事件线程结束\n\n");
+            write.Wait();
+            WriteLine("写事件线程结束\n\n");
+
 
             WriteLine("主线程结束");
 

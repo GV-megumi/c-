@@ -7,6 +7,7 @@ using Nchapter15;
 using Nchapter16;
 using Nchapter18;
 using Nchapter19;
+using GuessWord;
 
 
 namespace asss
@@ -37,6 +38,8 @@ namespace asss
 
 
             a.f();
+
+            //Game.f();
 
 
             a.pause();
