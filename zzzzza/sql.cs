@@ -15,7 +15,7 @@ namespace chapter
         {
 
    // 连接字符串，根据您的数据库配置进行修改
-        string connectionString = "Server=localhost;Port=3306;Database=mhgl;Uid=root;Pwd=453986;";
+        string connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=;";
 
         try
         {
@@ -24,7 +24,7 @@ namespace chapter
                 connection.Open();
 
                 // 执行查询
-                string query = "SELECT * FROM flight";
+                string query = "SELECT * FROM food_i";
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())

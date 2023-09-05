@@ -8,6 +8,7 @@ using Nchapter16;
 using Nchapter18;
 using Nchapter19;
 using GuessWord;
+using caidan;
 
 
 namespace asss
@@ -33,14 +34,19 @@ namespace asss
                 //a= new chapter10_12();
                 //a= new chapter13();
                 //a= new chapter7();
-                a = new chapter20();
-                a=new Sql();
+                a = new chapter15();
+                //a=new Sql();
             }
 
-
-            a.f();
-
+          //  a.f();
             //Game.f();
+
+
+        UI caiDanUI = new ();
+        ShiCai shiCai = new (caiDanUI);
+
+        Clear();
+        caiDanUI.run();
 
 
             a.pause();

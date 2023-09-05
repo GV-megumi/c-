@@ -60,9 +60,6 @@ namespace Nchapter15
 
 
 
-
-
-
         //标准事件      事件访问器
         public event EventHandler<PutKeynumEventArgs> event2;
 
