@@ -26,6 +26,7 @@ namespace caidan
             shiCai.SqlDelete += Delete;
             shiCai.SqlInsert += Insert;
             shiCai.SqlUpdate += Update;
+            shiCai.SqlGetTable+=SqlGetShicai;
 
 
         }
@@ -343,6 +344,204 @@ namespace caidan
 
             return true;
         }
+
+
+
+
+
+
+                void SqlGetShicai(
+                    string[,] shicai,ref int shicainum,
+                    string[,] supplier,ref int supplierNum,
+                    string[,] sourceOfGoods,ref int sogNum,
+                    string[,] inventory,ref int inventoryNum,
+                    int[][] strlens)
+        {
+
+            // 连接字符串，根据您的数据库配置进行修改
+
+            string query;
+
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // 执行查询
+                    WriteLine("正在加载食材相关数据：");
+                    query = "SELECT * FROM food_i";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                shicainum++;
+                                // 从结果集中获取数据并处理
+
+
+                                shicai[shicainum, 0] = reader.GetString("name");
+                                shicai[shicainum, 1] = reader.GetString("P_C");
+                                shicai[shicainum, 2] = reader.GetString("I_N_D");
+                                shicai[shicainum, 3] = reader.GetString("S_C");
+                                shicai[shicainum, 4] = reader.GetString("NUTR");
+
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (shicai[shicainum, i].Length > strlens[0][i])
+                                    {
+                                        strlens[0][i] = shicai[shicainum, i].Length;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    WriteLine("食材数据加载完成");
+
+
+
+
+
+                    WriteLine("正在加载供应商相关数据：");
+                    query = "SELECT * FROM SUP";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                supplierNum++;
+                                // 从结果集中获取数据并处理
+                                supplier[supplierNum, 0] = reader.GetString("M_F");
+                                supplier[supplierNum, 1] = reader.GetString("address");
+                                supplier[supplierNum, 2] = reader.GetString("poo");
+                                supplier[supplierNum, 3] = reader.GetString("FPLN");
+                                supplier[supplierNum, 4] = reader.GetString("PSN");
+
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (supplier[supplierNum, i].Length > strlens[3][i])
+                                    {
+                                        strlens[3][i] = supplier[supplierNum, i].Length;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    WriteLine("供应商数据加载完成");
+
+
+
+
+                    //sourceOfGoods  sogNum
+
+
+
+                    WriteLine("正在加载进货渠道相关数据：");
+                    query = "SELECT * FROM SOG";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                sogNum++;
+                                // 从结果集中获取数据并处理
+                                sourceOfGoods[sogNum, 0] = reader.GetString("NAME");
+                                sourceOfGoods[sogNum, 1] = reader.GetString("M_F");
+
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    if (sourceOfGoods[sogNum, i].Length > strlens[2][i])
+                                    {
+                                        strlens[2][i] = sourceOfGoods[sogNum, i].Length;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    WriteLine("进货渠道数据加载完成");
+
+
+
+
+
+
+                    //inventory    inventoryNum   1
+
+
+
+                    WriteLine("正在加载库存相关数据：");
+                    query = "SELECT * FROM SOG,inv where SOG.SOG_ID=inv.sog_id";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                inventoryNum++;
+                                // 从结果集中获取数据并处理
+
+                                /*
+                                            inventory[0, 0] = "品名";
+            inventory[0, 1] = "生产日期";
+            inventory[0, 2] = "净含量";
+            inventory[0, 3] = "保质期";
+
+            inventory[0, 4] = "数量";
+            inventory[0, 5] = "供应商";
+            */
+                                inventory[inventoryNum, 0] = reader.GetString("NAME");
+                                inventory[inventoryNum, 1] = reader.GetString("date");
+                                inventory[inventoryNum, 2] = reader.GetString("nc");
+                                inventory[inventoryNum, 3] = reader.GetString("sl");
+                                inventory[inventoryNum, 4] = reader.GetString("number");
+                                inventory[inventoryNum, 5] = reader.GetString("M_F");
+
+
+                                for (int i = 0; i < 6; i++)
+                                {
+                                    if (inventory[inventoryNum, i].Length > strlens[1][i])
+                                    {
+                                        strlens[1][i] = inventory[inventoryNum, i].Length;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    WriteLine("库存数据加载完成");
+
+
+
+
+
+
+
+
+
+
+
+
+                    connection.Close();
+                    //putfood_i();
+
+                    Clear();
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
 
 
     }

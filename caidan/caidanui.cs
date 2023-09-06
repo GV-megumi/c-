@@ -1,8 +1,5 @@
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Microsoft.VisualBasic.FileIO;
-using Org.BouncyCastle.Crypto.Fpe;
+
 using static System.Console;
 
 namespace caidan
@@ -112,6 +109,15 @@ namespace caidan
             Clear();
             int rowmax = tabnum;
             putTable(ref rowmax);
+            rowmax=0-rowmax;
+
+            if (rowmax == -1)
+            {
+                WriteLine("错误：未获取到表格,将返回到主菜单");
+                pause();
+                mainui();
+                return;
+            }
 
             WriteLine("Q:添加");
             WriteLine("W:删除");
@@ -160,6 +166,15 @@ namespace caidan
             Clear();
 
             putTable(ref rowmax);
+            rowmax=0-rowmax;
+
+            if (rowmax == -1)
+            {
+                WriteLine("错误：未获取到表格,将返回到主菜单");
+                pause();
+                mainui();
+                return;
+            }
         backk:
             Write("请输入要修改的行号并按回车确定：");
             try
@@ -268,8 +283,16 @@ namespace caidan
 
             //获取修改的内容
             Clear();
-            rowmax=tabnum;
+            rowmax = tabnum;
             putTable(ref rowmax);
+            rowmax=0-rowmax;
+            if (rowmax == -1)
+            {
+                WriteLine("错误：未获取到表格,将返回到主菜单");
+                pause();
+                mainui();
+                return;
+            }
             Write($"将第{row:D3}的  {hand[column]}  改为：");
             try
             {
@@ -319,9 +342,18 @@ namespace caidan
 
         void Delete()
         {
-            int row, rowmax=tabnum;
+            int row, rowmax = tabnum;
             Clear();
             putTable(ref rowmax);
+            rowmax=0-rowmax;
+
+            if (rowmax == -1)
+            {
+                WriteLine("错误：未获取到表格,将返回到主菜单");
+                pause();
+                mainui();
+                return;
+            }
         backk:
             Write("请输入要删除的行号并按回车确定：");
             try
@@ -481,11 +513,15 @@ namespace caidan
 
 
 
+        public delegate void Link();
+        public event Link LinkToSql;
+        
 
 
 
         public void run()
         {
+            LinkToSql();
             mainui();
 
 
