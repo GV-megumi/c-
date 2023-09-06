@@ -38,6 +38,7 @@ namespace caidan
             WriteLine("Q:食材管理");
             WriteLine("W:菜谱管理");
             WriteLine("E:菜单");
+            WriteLine("R:退出");
             WriteLine("请键入字母选择：");
 
             key = Console.ReadKey().Key;
@@ -48,9 +49,15 @@ namespace caidan
                 shicaiui();
             }
             else if (key == ConsoleKey.W)
-                ;
+                {
+                    Clear();
+                    tabnum=4;
+                    IDCUI();
+                }
             else if (key == ConsoleKey.E)
                 ;
+            else if (key == ConsoleKey.R)
+                return;
             else
             {
                 Clear();
@@ -104,7 +111,7 @@ namespace caidan
         {
             Clear();
 
-            putTable(tabnum);
+            WriteLine($"{putTable(tabnum)}     qweeqe");
 
             WriteLine("Q:添加");
             WriteLine("W:删除");
@@ -226,7 +233,7 @@ namespace caidan
             }
 
             //对库存表的单独照顾：库存不可以改 食材名和供应商
-            if(tabnum==1&&(column==0||column==5))
+            if (tabnum == 1 && (column == 0 || column == 5))
             {
                 WriteLine("此项不可更改");
                 pause();
