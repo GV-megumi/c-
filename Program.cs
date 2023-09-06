@@ -44,12 +44,18 @@ namespace asss
 
         UI caiDanUI = new ();
         ShiCai shiCai = new (caiDanUI);
+        CaiPU caiPU= new ();
+        MyFoodSql myFoodSql= new (shiCai,caiPU);
+
+
 
         Clear();
+
+
         caiDanUI.run();
 
 
-            a.pause();
+            caiDanUI.pause();
 
 
 
