@@ -18,13 +18,13 @@ namespace caidan
         int tabnum;
 
         //自定义委托声明，
-        public delegate t MyDel1<t>(int a);
+        public delegate void MyDel1(ref int a);
 
         //非标准事件委托，调用
         public delegate T MyDel2<T, R>(R a, int tablenum);
 
         //输出表格
-        public event MyDel1<int> putTable;
+        public event MyDel1 putTable;
 
 
 
@@ -49,11 +49,11 @@ namespace caidan
                 shicaiui();
             }
             else if (key == ConsoleKey.W)
-                {
-                    Clear();
-                    tabnum=4;
-                    IDCUI();
-                }
+            {
+                Clear();
+                tabnum = 4;
+                IDCUI();
+            }
             else if (key == ConsoleKey.E)
                 ;
             else if (key == ConsoleKey.R)
@@ -110,8 +110,8 @@ namespace caidan
         void IDCUI()
         {
             Clear();
-
-            WriteLine($"{putTable(tabnum)}     qweeqe");
+            int rowmax = tabnum;
+            putTable(ref rowmax);
 
             WriteLine("Q:添加");
             WriteLine("W:删除");
@@ -151,14 +151,15 @@ namespace caidan
         void Update()
         {
 
-            int row, column, maxrow, i;//行号，列号,总行数
+            int row, column, rowmax = tabnum, i;//行号，列号,总行数
             string[] hand, updateData = new string[3];
 
 
 
             //获取行
             Clear();
-            maxrow = putTable(tabnum);
+
+            putTable(ref rowmax);
         backk:
             Write("请输入要修改的行号并按回车确定：");
             try
@@ -180,7 +181,7 @@ namespace caidan
             }
 
 
-            if (row > maxrow || row < 0)
+            if (row > rowmax || row < 0)
             {
                 //Clear();
                 Write("错误：没有该行。   ");
@@ -267,7 +268,8 @@ namespace caidan
 
             //获取修改的内容
             Clear();
-            putTable(tabnum);
+            rowmax=tabnum;
+            putTable(ref rowmax);
             Write($"将第{row:D3}的  {hand[column]}  改为：");
             try
             {
@@ -317,9 +319,9 @@ namespace caidan
 
         void Delete()
         {
-            int row, rowmax;
+            int row, rowmax=tabnum;
             Clear();
-            rowmax = putTable(tabnum);
+            putTable(ref rowmax);
         backk:
             Write("请输入要删除的行号并按回车确定：");
             try

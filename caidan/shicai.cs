@@ -9,7 +9,7 @@ using Org.BouncyCastle.Math.EC.Multiplier;
 namespace caidan
 {
 
-    class ShiCai
+    class ShiCai:TableType
     {
         //sql连接
         string connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=;";
@@ -95,7 +95,7 @@ namespace caidan
 
 
         //输出表格
-        int putTable(int a)
+        void putTable(ref int a)
         {
 
 
@@ -109,7 +109,7 @@ namespace caidan
 
 
             if ((aaa = ChooseTable(a)) == null)
-                return -1;
+                return;
 
 
             int num = aaa.GetLength(1);
@@ -155,7 +155,7 @@ namespace caidan
 
             WriteLine("\n\n");
 
-            return j - 1;
+            a= j - 1;
 
 
         }
@@ -601,24 +601,7 @@ namespace caidan
             return ref supplierNum;
         }
         //返回子符串中的数字和字母以及标点符号的数量（不包含中文字符）
-        int putspace(string inputString)
-        {
-
-
-
-            // 使用正则表达式匹配包含字母、数字和标点符号的子串，排除中文字符
-            string pattern = @"[a-zA-Z0-9\p{P}]+";
-            MatchCollection matches = Regex.Matches(inputString, pattern);
-
-            int letterDigitAndPunctuationCount = 0;
-
-            foreach (Match match in matches)
-            {
-                letterDigitAndPunctuationCount += match.Value.Length;
-            }
-            return letterDigitAndPunctuationCount;
-        }
-
+  
 
         //传递表头
         string[] SendTableHand(int a, int tablenum)
@@ -632,11 +615,7 @@ namespace caidan
             return hand;
         }
 
-        public void pause()
-        {
-            WriteLine("\n按任意键继续");
-            ReadKey();
-        }
+
 
     }
 }

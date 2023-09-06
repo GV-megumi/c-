@@ -6,15 +6,15 @@ using Org.BouncyCastle.Math.EC.Multiplier;
 namespace caidan
 {
 
-    class CaiPU
+    class CaiPU:TableType
     {
         public CaiPU(UI i)
         {
-            i.putTable+=putTable;
+           // i.putTable+=putTable;
 
         }
 
-        int putTable(int a)
+        int putTable(ref int a)
         {
             if(a==4)
             WriteLine(12);
