@@ -102,10 +102,10 @@ namespace caidan
             i.GetTableHand += SendTableHand;
             i.CallInsert += DoInsert;
             i.CallUpdate += DoUpdate;
-            i.LinkToSql +=LingWithTable;
+            i.LinkToSql +=LinkWithTable;
         }
 
-        void LingWithTable()
+        void LinkWithTable()
         {
             SqlGetTable(
             shicai, ref shicainum,

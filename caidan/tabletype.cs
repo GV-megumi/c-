@@ -53,7 +53,7 @@ namespace caidan
 
 
 
-                spacenum = strlens[i] - s.Length + 4;
+                spacenum = strlens[i] - s.Length + 1;
                 //Write(spacenum);
                 while (spacenum != 0)
                 {

@@ -20,16 +20,27 @@ namespace caidan
             sqlHand[1] = new string[] { "NAME", "date", "nc", "sl", "number", "M_F" };
             sqlHand[2] = new string[] { "NAME", "M_F", };
             sqlHand[3] = new string[] { "M_F", "address", "poo", "FPLN", "PSN" };
+            sqlHand[4] = new string[] { "name","M_I","S_S","R_S","R_C","M_V"};
 
 
 
             shiCai.SqlDelete += Delete;
             shiCai.SqlInsert += Insert;
             shiCai.SqlUpdate += Update;
-            shiCai.SqlGetTable+=SqlGetShicai;
+            shiCai.SqlGetTable += SqlGetShicai;
+
+
+
+
+            caiPU.SqlGetTable += SqlGetCaipu;
 
 
         }
+
+
+
+
+
 
         bool Update(string[] str, int num)
         {
@@ -87,7 +98,7 @@ namespace caidan
             for (int i = 0; i < columnnum; i++)
             {
                 if ((i == column)//更新行
-                ||(num==1&&(i==0||i==5))//对库存的特殊照顾
+                || (num == 1 && (i == 0 || i == 5))//对库存的特殊照顾
                 )
                     continue;
 
@@ -103,17 +114,17 @@ namespace caidan
                 }
 
 
-                updateQuery +=" "+ sqlHand[num][i] + " = " +data +" and";
+                updateQuery += " " + sqlHand[num][i] + " = " + data + " and";
 
 
             }
 
-            updateQuery=updateQuery.Substring(0, updateQuery.Length - 3);
+            updateQuery = updateQuery.Substring(0, updateQuery.Length - 3);
 
             //对库存的特殊照顾
-            if(num==1)
+            if (num == 1)
             {
-                updateQuery+=" and sog_id in ( SELECT DISTINCT subquery.sog_id FROM ( SELECT inv.sog_id FROM inv, sog WHERE inv.sog_id = sog.SOG_ID AND sog.NAME = '" + str[0] + "' AND sog.M_F = '" + str[5] + "' ) AS subquery ) ;";
+                updateQuery += " and sog_id in ( SELECT DISTINCT subquery.sog_id FROM ( SELECT inv.sog_id FROM inv, sog WHERE inv.sog_id = sog.SOG_ID AND sog.NAME = '" + str[0] + "' AND sog.M_F = '" + str[5] + "' ) AS subquery ) ;";
             }
 
             WriteLine(updateQuery);
@@ -350,12 +361,12 @@ namespace caidan
 
 
 
-                void SqlGetShicai(
-                    string[,] shicai,ref int shicainum,
-                    string[,] supplier,ref int supplierNum,
-                    string[,] sourceOfGoods,ref int sogNum,
-                    string[,] inventory,ref int inventoryNum,
-                    int[][] strlens)
+        void SqlGetShicai(
+            string[,] shicai, ref int shicainum,
+            string[,] supplier, ref int supplierNum,
+            string[,] sourceOfGoods, ref int sogNum,
+            string[,] inventory, ref int inventoryNum,
+            int[][] strlens)
         {
 
             // 连接字符串，根据您的数据库配置进行修改
@@ -543,6 +554,71 @@ namespace caidan
         }
 
 
+
+
+        void SqlGetCaipu(string[,] caiPU, ref int Caipunum, int[] strlens)
+        {
+         
+
+
+
+
+            string query;
+
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // 执行查询
+                    WriteLine("正在加载食材相关数据：");
+                    query = "SELECT * FROM rmm";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Caipunum++;
+                             
+                                for (int i = 0; i < 6; i++)
+                                {
+                                    // 从结果集中获取数据并处理
+                                    caiPU[Caipunum, i] = reader.GetString(sqlHand[4][i]);
+                                    if (caiPU[Caipunum, i].Length > strlens[i])
+                                    {
+                                        strlens[i] = caiPU[Caipunum, i].Length;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    WriteLine("食材数据加载完成");
+
+
+
+
+
+
+
+                    connection.Close();
+                    //putfood_i();
+
+                    Clear();
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+
+        }
 
     }
 
