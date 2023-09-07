@@ -21,7 +21,7 @@ namespace caidan
         public delegate T MyDel2<T, R>(R a, int tablenum);
 
         //输出表格
-        public event MyDel1 putTable;
+        public event MyDel1? putTable;
 
 
 
@@ -31,15 +31,14 @@ namespace caidan
 
         void mainui()
         {
-        backk:
+
             WriteLine("Q:食材管理");
             WriteLine("W:菜谱管理");
             WriteLine("E:菜单");
             WriteLine("R:退出");
-            WriteLine("请键入字母选择：");
-
-            key = Console.ReadKey().Key;
-            WriteLine(key);
+            Write("请键入字母选择：");
+        backk:
+            key = Console.ReadKey(intercept: true).Key;
             if (key == ConsoleKey.Q)
             {
                 Clear();
@@ -57,7 +56,6 @@ namespace caidan
                 return;
             else
             {
-                Clear();
                 goto backk;
             }
 
@@ -65,18 +63,17 @@ namespace caidan
 
         void shicaiui()
         {
-        backk:
+
             WriteLine("Q:食材管理");
             WriteLine("W:库存管理");
             WriteLine("E:进货渠道管理：");
             WriteLine("R:供应商管理");
             WriteLine("T:返回");
             Write("请键入字母选择：");
+        backk:
+            key = Console.ReadKey(intercept: true).Key;
 
-            key = Console.ReadKey().Key;
-            WriteLine(key);
-
-            Clear();
+            
 
             if (key == ConsoleKey.Q)
                 tabnum = 0;
@@ -94,7 +91,6 @@ namespace caidan
             }
             else
             {
-                Clear();
                 goto backk;
             }
 
@@ -108,8 +104,8 @@ namespace caidan
         {
             Clear();
             int rowmax = tabnum;
-            putTable(ref rowmax);
-            rowmax=0-rowmax;
+            putTable?.Invoke(ref rowmax);
+            rowmax = 0 - rowmax;
 
             if (rowmax == -1)
             {
@@ -153,20 +149,20 @@ namespace caidan
 
 
 
-        public event MyDel2<bool, string[]> CallUpdate;
+        public event MyDel2<bool, string[]>? CallUpdate;
         void Update()
         {
 
             int row, column, rowmax = tabnum, i;//行号，列号,总行数
-            string[] hand, updateData = new string[3];
+            string[]? hand, updateData = new string[3];
 
 
 
             //获取行
             Clear();
 
-            putTable(ref rowmax);
-            rowmax=0-rowmax;
+            putTable?.Invoke(ref rowmax);
+            rowmax = 0 - rowmax;
 
             if (rowmax == -1)
             {
@@ -180,10 +176,10 @@ namespace caidan
             try
             {
 
-                row = int.Parse(ReadLine());
+                row = int.Parse(ReadLine() ?? "-999");
 
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 goto backk;
             }
@@ -211,7 +207,7 @@ namespace caidan
 
             //获取表头
             Clear();
-            if ((hand = GetTableHand(-1, tabnum)) == null)
+            if ((hand = GetTableHand?.Invoke(-1, tabnum)) == null)
             {
                 WriteLine("ERROR:未获取到表头");
                 pause();
@@ -232,10 +228,10 @@ namespace caidan
             try
             {
 
-                column = int.Parse(ReadLine());
+                column = int.Parse(ReadLine() ?? "-99");
 
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 goto backkk;
             }
@@ -284,8 +280,8 @@ namespace caidan
             //获取修改的内容
             Clear();
             rowmax = tabnum;
-            putTable(ref rowmax);
-            rowmax=0-rowmax;
+            putTable?.Invoke(ref rowmax);
+            rowmax = 0 - rowmax;
             if (rowmax == -1)
             {
                 WriteLine("错误：未获取到表格,将返回到主菜单");
@@ -296,7 +292,7 @@ namespace caidan
             Write($"将第{row:D3}的  {hand[column]}  改为：");
             try
             {
-                updateData[2] = ReadLine();
+                updateData[2] = ReadLine() ?? " ";
             }
             catch (Exception ex)
             {
@@ -315,7 +311,7 @@ namespace caidan
 
 
             Clear();
-            if (CallUpdate(updateData, tabnum))
+            if (CallUpdate?.Invoke(updateData, tabnum) ?? false)
             {
                 WriteLine("修改成功");
 
@@ -338,14 +334,14 @@ namespace caidan
 
 
 
-        public event MyDel2<bool, int> CallDelete;
+        public event MyDel2<bool, int>? CallDelete;
 
         void Delete()
         {
             int row, rowmax = tabnum;
             Clear();
-            putTable(ref rowmax);
-            rowmax=0-rowmax;
+            putTable?.Invoke(ref rowmax);
+            rowmax = 0 - rowmax;
 
             if (rowmax == -1)
             {
@@ -359,10 +355,10 @@ namespace caidan
             try
             {
 
-                row = int.Parse(ReadLine());
+                row = int.Parse(ReadLine() ?? "-1");
 
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 goto backk;
             }
@@ -389,7 +385,7 @@ namespace caidan
 
 
             Clear();
-            if (CallDelete(row, tabnum))
+            if (CallDelete?.Invoke(row, tabnum) ?? false)
             {
                 WriteLine("删除成功");
 
@@ -406,13 +402,13 @@ namespace caidan
         }
 
         //用于获取表头
-        public event MyDel2<string[], int> GetTableHand;
+        public event MyDel2<string[], int>? GetTableHand;
 
 
 
 
 
-        public event MyDel2<bool, string[]> CallInsert;
+        public event MyDel2<bool, string[]>? CallInsert;
 
         void Insert()
         {
@@ -420,8 +416,8 @@ namespace caidan
             Clear();
             //putTable(tabnum);
 
-            string[] hand;
-            if ((hand = GetTableHand(-1, tabnum)) == null)
+            string[]? hand;
+            if ((hand = GetTableHand?.Invoke(-1, tabnum)) == null)
             {
                 WriteLine("ERROR:未获取到表头");
                 pause();
@@ -436,11 +432,11 @@ namespace caidan
                 {
 
                     Write($"请输入 {hand[i]}:");
-                    hand[i] = ReadLine();
+                    hand[i] = ReadLine() ?? " ";
 
 
                 }
-                catch (FormatException ex)
+                catch (FormatException)
                 {
                     goto backk;
                 }
@@ -463,7 +459,7 @@ namespace caidan
 
 
             Clear();
-            if (CallInsert(hand, tabnum))
+            if (CallInsert?.Invoke(hand, tabnum) ?? false)
             {
                 WriteLine("添加成功");
 
@@ -514,14 +510,15 @@ namespace caidan
 
 
         public delegate void Link();
-        public event Link LinkToSql;
-        
+        public event Link? LinkToSql;
+
 
 
 
         public void run()
         {
-            LinkToSql();
+            LinkToSql?.Invoke();
+
             mainui();
 
 

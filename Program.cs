@@ -44,8 +44,7 @@ namespace asss
 
         UI caiDanUI = new ();
         ShiCai shiCai = new (caiDanUI);
-        CaiPU caiPU= new (caiDanUI);
-        MyFoodSql myFoodSql= new (shiCai,caiPU);
+        MyFoodSql myFoodSql= new (shiCai);
 
 
 

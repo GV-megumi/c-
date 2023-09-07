@@ -1,7 +1,7 @@
 using System;
 using static System.Console;
 using MySql.Data.MySqlClient;
-using System.Text.RegularExpressions;
+using System.Text;
 
 
 namespace caidan
@@ -12,7 +12,7 @@ namespace caidan
         string connectionString;
         string[][] sqlHand = new string[5][];
 
-        public MyFoodSql(ShiCai shiCai, CaiPU caiPU)
+        public MyFoodSql(ShiCai shiCai)
         {
             connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=;";
 
@@ -20,21 +20,46 @@ namespace caidan
             sqlHand[1] = new string[] { "NAME", "date", "nc", "sl", "number", "M_F" };
             sqlHand[2] = new string[] { "NAME", "M_F", };
             sqlHand[3] = new string[] { "M_F", "address", "poo", "FPLN", "PSN" };
-            sqlHand[4] = new string[] { "name","M_I","S_S","R_S","R_C","M_V"};
+            sqlHand[4] = new string[] { "name", "M_I", "S_S", "R_S", "R_C", "M_V" };
 
 
 
             shiCai.SqlDelete += Delete;
             shiCai.SqlInsert += Insert;
             shiCai.SqlUpdate += Update;
-            shiCai.SqlGetTable += SqlGetShicai;
+            shiCai.SqlGetShicaiTable += SqlGetShicai;
+            shiCai.SqlGetCaipuTable += SqlGetCaipu;
 
 
+        }
+
+        //检查是否有单引号
+        string CheckData(string data, bool isint)
+        {
+
+            //对int的特殊照顾
+            if (isint)
+            {
+                return data;
+            }
 
 
-            caiPU.SqlGetTable += SqlGetCaipu;
+            StringBuilder result = new StringBuilder();
 
+            foreach (char c in data)
+            {
+                // 如果当前字符是单引号，将其后面再添加一个单引号
+                if (c == '\'')
+                {
+                    result.Append("''");
+                }
+                else
+                {
+                    result.Append(c);
+                }
+            }
 
+            return "'" + result.ToString() + "'";
         }
 
 
@@ -54,17 +79,7 @@ namespace caidan
             string data;
 
             //判断sql属性类型是否为int
-            if (num == 1 && column == 4)
-            {
-                data = str[column];
-            }
-            else
-            {
-                data = "'" + str[column] + "'";
-
-            }
-
-
+            data = CheckData(str[column], num == 1 && column == 4);
 
             // 要执行的删除操作 SQL 语句
             switch (num)
@@ -88,6 +103,10 @@ namespace caidan
                     //商
                     updateQuery += " sup SET ";
                     break;
+                case 4:
+                    updateQuery += " rmm SET ";
+                    break;
+
             }
 
 
@@ -102,16 +121,9 @@ namespace caidan
                 )
                     continue;
 
-                //对int的特殊照顾
-                if (num == 1 && i == 4)
-                {
-                    data = str[i];
-                }
-                else
-                {
-                    data = "'" + str[i] + "'";
+                //  后一项为数据是int的条件
+                data = CheckData(str[i], num == 1 && i == 4);
 
-                }
 
 
                 updateQuery += " " + sqlHand[num][i] + " = " + data + " and";
@@ -188,25 +200,31 @@ namespace caidan
             {
                 case 0:
                     //食材
-                    deleteQuery += " food_i WHERE `name`= '" + s[0] + "';";
+                    deleteQuery += " food_i WHERE `name`= " + CheckData(s[0], false) + ";";
 
                     break;
                 case 1:
                     //库存
-                    deleteQuery += " inv WHERE `date` = '"
-                    + s[1] + "' AND `sog_id` IN ("
+                    deleteQuery += " inv WHERE `date` = "
+                    + CheckData(s[1], false) + " AND `sog_id` IN ("
                     + "SELECT * FROM (SELECT inv.sog_id FROM inv, sog WHERE inv.sog_id = sog.SOG_ID AND "
-                    + "sog.NAME = '" + s[0] + "' AND sog.M_F = '" + s[5] + "') AS subquery);";
+                    + "sog.NAME = " + CheckData(s[0], false) + " AND sog.M_F = "
+                    + CheckData(s[5], false) + ") AS subquery);";
                     break;
                 case 2:
                     //进货渠道
                     //sourceOfGoods[0, 0] = "品名";
                     //sourceOfGoods[0, 1] = "制造商";
-                    deleteQuery += " sog WHERE `NAME`= '" + s[0] + "' AND `M_F` = '" + s[1] + "';";
+                    deleteQuery += " sog WHERE `NAME`= " + CheckData(s[0], false) + " AND `M_F` = "
+                     + CheckData(s[1], false) + ";";
                     break;
                 case 3:
                     //商
-                    deleteQuery += " sup WHERE `M_F`= '" + s[0] + "';";
+                    deleteQuery += " sup WHERE `M_F`= " + CheckData(s[0], false) + ";";
+                    break;
+                case 4:
+                    //商
+                    deleteQuery += " rmm WHERE `name`= " + CheckData(s[0], false) + ";";
                     break;
             }
 
@@ -290,14 +308,14 @@ namespace caidan
 
 
                     insertQuery += "`inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) VALUES ("
-                    + "(SELECT SOG_ID FROM sog WHERE sog.NAME = '"
-                    + str[0]
-                    + "' AND sog.M_F = '"
-                    + str[5] + "'),'"
-                    + str[1] + "','"
-                    + str[2] + "','"
-                    + str[3] + "',"
-                    + str[4] + ")";
+                    + "(SELECT SOG_ID FROM sog WHERE sog.NAME = "
+                    + CheckData(str[0], false)
+                    + " AND sog.M_F = "
+                    + CheckData(str[5], false) + "),"
+                    + CheckData(str[1], false) + ","
+                    + CheckData(str[2], false) + ","
+                    + CheckData(str[3], false) + ","
+                    + CheckData(str[4], true) + ")";
                     goto link;
 
                 case 2:
@@ -309,13 +327,18 @@ namespace caidan
                     //商
                     insertQuery += "`SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`)  VALUES (";
                     break;
+
+                case 4:
+                    //菜谱
+                    insertQuery += "`rmm` (  `name` ,`M_I`,`S_S` ,`R_S` ,`R_C`,`M_V`)  VALUES (";
+                    break;
             }
 
 
             //添加值
             foreach (string s in str)
             {
-                insertQuery += "'" + s + "',";
+                insertQuery += "" + CheckData(s, false) + ",";
             }
             insertQuery = insertQuery.Substring(0, insertQuery.Length - 1);
             insertQuery += ")";
@@ -324,7 +347,10 @@ namespace caidan
 
 
 
+
+
         link:
+
             try
             {
 
@@ -345,7 +371,7 @@ namespace caidan
             }
             catch (Exception ex)
             {
-                WriteLine("错误：请检查是否有该食材或供应商");
+                WriteLine("错误：请检查是否有该食材或供应商/数量请输入数字");
                 WriteLine("Error: " + ex.Message);
 
                 return false;
@@ -558,7 +584,7 @@ namespace caidan
 
         void SqlGetCaipu(string[,] caiPU, ref int Caipunum, int[] strlens)
         {
-         
+
 
 
 
@@ -582,7 +608,7 @@ namespace caidan
                             while (reader.Read())
                             {
                                 Caipunum++;
-                             
+
                                 for (int i = 0; i < 6; i++)
                                 {
                                     // 从结果集中获取数据并处理

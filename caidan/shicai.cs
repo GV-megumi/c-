@@ -33,19 +33,29 @@ namespace caidan
 
 
 
+        //菜谱
+        string[,] caiPu = new string[100, 6];
+       
+        public int caiPunum;
+
+
+
 
         //用于表格对齐
-        int[][] strlens = new int[4][];
+        int[][] strlens = new int[5][];
 
         //sql获取表格委托
 
-        public delegate void MySQLGetTableDel(
+        public delegate void MySqlGetShicaiTable(
                     string[,] shicai, ref int shicainum,
                     string[,] supplier, ref int supplierNum,
                     string[,] sourceOfGoods, ref int sogNum,
                     string[,] inventory, ref int inventoryNum,
                     int[][] strlens);
-        public event MySQLGetTableDel SqlGetTable;
+        public event MySqlGetShicaiTable? SqlGetShicaiTable;
+
+        public delegate void MySQLGetCaipuTableDel(string[,] caiPU, ref int Caipunum, int[] strlens);
+        public event MySQLGetCaipuTableDel? SqlGetCaipuTable;
 
 
 
@@ -85,6 +95,18 @@ namespace caidan
             supplier[0, 4] = "产品标准号";
             strlens[3] = new int[] { 3, 2, 2, 8, 5 };
 
+
+
+
+            caiPunum = 0;
+            caiPu[0, 0] = "名称";
+            caiPu[0, 1] = "主料";
+            caiPu[0, 2] = "调料";
+            caiPu[0, 3] = "做法步骤";
+            caiPu[0, 4] = "菜系";
+            caiPu[0, 5] = "荤素";
+            strlens[4] = new int[] { 2, 2, 2, 4, 2, 2 };
+
             shicainum = 0;
             inventoryNum = 0;
             sogNum = 0;
@@ -102,17 +124,19 @@ namespace caidan
             i.GetTableHand += SendTableHand;
             i.CallInsert += DoInsert;
             i.CallUpdate += DoUpdate;
-            i.LinkToSql +=LinkWithTable;
+            i.LinkToSql += LinkWithTable;
         }
 
         void LinkWithTable()
         {
-            SqlGetTable(
+            SqlGetShicaiTable?.Invoke(
             shicai, ref shicainum,
          supplier, ref supplierNum,
          sourceOfGoods, ref sogNum,
          inventory, ref inventoryNum,
         strlens);
+
+        SqlGetCaipuTable?.Invoke(caiPu,ref caiPunum,strlens[4]);
         }
 
 
@@ -123,20 +147,20 @@ namespace caidan
             {
                 a = base.putTable(ChooseTable(a), this.strlens[a]);
             }
-            catch (Exception e)
+            catch (Exception )
             {
 
             }
 
         }
 
-        public event MySqlDel<bool, string[], int> SqlUpdate;
+        public event MySqlDel<bool, string[], int>? SqlUpdate;
         bool DoUpdate(string[] updateData, int num)
         {
 
 
             string[,] table;
-            int row, column, i, j;
+            int row, column, i;
             string[] str;
 
 
@@ -190,7 +214,7 @@ namespace caidan
 
 
             //更新数据库
-            if (!SqlUpdate(str, num))
+            if (!(SqlUpdate?.Invoke(str, num)??false))
             {
                 pause();
                 return false;
@@ -215,7 +239,7 @@ namespace caidan
 
         //sql怎删改 委托
         public delegate T MySqlDel<T, R, S>(R a, S b);
-        public event MySqlDel<bool, string[], int> SqlDelete;
+        public event MySqlDel<bool, string[], int>? SqlDelete;
         bool DoDelete(int row, int num)
         {
 
@@ -246,7 +270,7 @@ namespace caidan
 
 
             //删数据库
-            if (!SqlDelete(str, num))
+            if (!(SqlDelete?.Invoke(str, num)??false))
             {
                 pause();
                 return false;
@@ -271,7 +295,7 @@ namespace caidan
 
 
 
-        public event MySqlDel<bool, string[], int> SqlInsert;
+        public event MySqlDel<bool, string[], int>? SqlInsert;
 
         bool DoInsert(string[] str, int num)
         {
@@ -290,7 +314,7 @@ namespace caidan
 
 
             //加据库
-            if (!SqlInsert(str, num))
+            if (!(SqlInsert?.Invoke(str, num)??false))
             {
                 pause();
                 return false;
@@ -337,6 +361,10 @@ namespace caidan
             {
                 return supplier;
             }
+            else if (a == 4)
+            {
+                return caiPu;
+            }
             else
             {
                 // WriteLine("ERROR");
@@ -359,6 +387,8 @@ namespace caidan
 
                 case 2:
                     return ref sogNum;
+                case 4:
+                    return ref caiPunum;
 
 
 
