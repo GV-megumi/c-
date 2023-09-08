@@ -642,6 +642,15 @@ namespace caidan
                 // 获取程序目录下的 SQL 脚本文件路径
                 string scriptFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "food.sql");
 
+                while(!File.Exists(scriptFilePath))
+                {
+                    WriteLine("错误，未找到指定脚本，请将：food.sql 放到以下文件夹中 ：");
+                    WriteLine(AppDomain.CurrentDomain.BaseDirectory+"\n按任意键继续");
+                    ReadKey();
+                    Clear();
+
+                }
+
                 // 读取 SQL 脚本内容
                 string scriptContent = "use food;" + File.ReadAllText(scriptFilePath);
 
