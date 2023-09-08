@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using static System.Console;
 using MySql.Data.MySqlClient;
 using System.Text;
@@ -143,7 +143,7 @@ namespace caidan
                 updateQuery += " and sog_id in ( SELECT DISTINCT subquery.sog_id FROM ( SELECT inv.sog_id FROM inv, sog WHERE inv.sog_id = sog.SOG_ID AND sog.NAME = '" + str[0] + "' AND sog.M_F = '" + str[5] + "' ) AS subquery ) ;";
             }
 
-            WriteLine(updateQuery);
+            //WriteLine(updateQuery);
             //ReadKey();
 
 

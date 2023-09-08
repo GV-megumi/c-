@@ -1,5 +1,5 @@
 using System;
-
+using System.Threading.Tasks;
 using static System.Console;
 
 namespace caidan
@@ -371,7 +371,11 @@ namespace caidan
                 WriteLine("修改失败");
 
             }
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
+             sleep(500).Wait();
+            
+
+
         f1:
             Clear();
             IDCUI();
@@ -379,6 +383,11 @@ namespace caidan
 
         }
 
+        static async Task sleep(int n)
+        {
+            await Task.Delay(n);
+            
+        }
 
 
 
@@ -445,7 +454,8 @@ namespace caidan
                 WriteLine("删除失败");
 
             }
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
+            sleep(500).Wait();
             Clear();
             IDCUI();
 
@@ -519,7 +529,8 @@ namespace caidan
                 WriteLine("添加失败");
 
             }
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
+            sleep(500).Wait();
         f1:
             Clear();
             IDCUI();
