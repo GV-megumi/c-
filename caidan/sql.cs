@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using static System.Console;
 using MySql.Data.MySqlClient;
 using System.Text;
@@ -10,11 +11,13 @@ namespace caidan
     {
 
         string connectionString;
+        string passwd;
         string[][] sqlHand = new string[5][];
 
         public MyFoodSql(ShiCai shiCai)
         {
             connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=;";
+            passwd = "";
 
             sqlHand[0] = new string[] { "name", "P_C", "I_N_D", "S_C", "NUTR" };
             sqlHand[1] = new string[] { "NAME", "date", "nc", "sl", "number", "M_F" };
@@ -586,7 +589,8 @@ namespace caidan
                     if (!back)
                     {
                         Write("请尝试输入数据库密码以解决：");
-                        connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=" + ReadLine() + ";";
+                        passwd = ReadLine() ?? "";
+                        connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=" + passwd + ";";
                         back = true;
                         goto backk;
 
@@ -594,8 +598,91 @@ namespace caidan
                     return false;
                 }
 
+                // Unknown database 'food'
+
+                if (ex.Message.Contains("Unknown database 'food'"))
+                {
+                    Write("错误：没有该数据库，按任意键以新建");
+                    ReadKey();
+                    createDatabase();
+                    goto backk;
+
+
+                }
+                ReadKey();
+
+
+
             }
             return true;
+        }
+
+        void createDatabase()
+        {
+
+            string connectionString = "Server=localhost;Port=3306;Uid=root;Pwd=" + passwd + ";";
+
+            // 创建 MySQL 连接对象
+            MySqlConnection connection = new MySqlConnection(connectionString);
+
+            try
+            {
+                // 打开数据库连接
+                connection.Open();
+
+                // 创建一个新的数据库 food
+                string createDatabaseQuery = "drop database if exists food ; CREATE DATABASE food;";
+                MySqlCommand cmd = new MySqlCommand(createDatabaseQuery, connection);
+                cmd.ExecuteNonQuery();
+
+                WriteLine("数据库 food 创建成功！");
+
+
+
+                // 获取程序目录下的 SQL 脚本文件路径
+                string scriptFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "food.sql");
+
+                // 读取 SQL 脚本内容
+                string scriptContent = "use food;" + File.ReadAllText(scriptFilePath);
+
+                cmd = new MySqlCommand(scriptContent, connection);
+
+                // 执行 SQL 命令
+                cmd.ExecuteNonQuery();
+
+                WriteLine("SQL 脚本执行成功！");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("创建数据库时出现错误：" + ex.Message);
+            }
+            finally
+            {
+                // 关闭数据库连接
+                connection.Close();
+            }
+
+
+
+
+
+
+
+
         }
 
 
@@ -664,6 +751,7 @@ namespace caidan
                 {
                     return false;
                 }
+                ReadKey();
 
             }
             return true;
