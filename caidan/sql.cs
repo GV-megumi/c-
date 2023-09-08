@@ -53,6 +53,10 @@ namespace caidan
                 {
                     result.Append("''");
                 }
+                else if (c == ' ')
+                {
+                    continue;
+                }
                 else
                 {
                     result.Append(c);
@@ -387,7 +391,7 @@ namespace caidan
 
 
 
-        void SqlGetShicai(
+        bool SqlGetShicai(
             string[,] shicai, ref int shicainum,
             string[,] supplier, ref int supplierNum,
             string[,] sourceOfGoods, ref int sogNum,
@@ -398,8 +402,9 @@ namespace caidan
             // 连接字符串，根据您的数据库配置进行修改
 
             string query;
+            bool back = false;
 
-
+        backk:
             try
             {
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
@@ -576,13 +581,27 @@ namespace caidan
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                if (ex.Message.Contains("Access denied"))
+                {
+                    if (!back)
+                    {
+                        Write("请尝试输入数据库密码以解决：");
+                        connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=" + ReadLine() + ";";
+                        back = true;
+                        goto backk;
+
+                    }
+                    return false;
+                }
+
             }
+            return true;
         }
 
 
 
 
-        void SqlGetCaipu(string[,] caiPU, ref int Caipunum, int[] strlens)
+        bool SqlGetCaipu(string[,] caiPU, ref int Caipunum, int[] strlens)
         {
 
 
@@ -641,7 +660,13 @@ namespace caidan
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                if (ex.Message.Contains("Access denied"))
+                {
+                    return false;
+                }
+
             }
+            return true;
 
 
         }

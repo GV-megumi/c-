@@ -1,4 +1,5 @@
 using System;
+using Org.BouncyCastle.Math.EC.Multiplier;
 using static System.Console;
 
 
@@ -35,7 +36,7 @@ namespace caidan
 
         //菜谱
         string[,] caiPu = new string[100, 6];
-       
+
         public int caiPunum;
 
 
@@ -46,7 +47,7 @@ namespace caidan
 
         //sql获取表格委托
 
-        public delegate void MySqlGetShicaiTable(
+        public delegate bool MySqlGetShicaiTable(
                     string[,] shicai, ref int shicainum,
                     string[,] supplier, ref int supplierNum,
                     string[,] sourceOfGoods, ref int sogNum,
@@ -54,7 +55,7 @@ namespace caidan
                     int[][] strlens);
         public event MySqlGetShicaiTable? SqlGetShicaiTable;
 
-        public delegate void MySQLGetCaipuTableDel(string[,] caiPU, ref int Caipunum, int[] strlens);
+        public delegate bool MySQLGetCaipuTableDel(string[,] caiPU, ref int Caipunum, int[] strlens);
         public event MySQLGetCaipuTableDel? SqlGetCaipuTable;
 
 
@@ -125,18 +126,140 @@ namespace caidan
             i.CallInsert += DoInsert;
             i.CallUpdate += DoUpdate;
             i.LinkToSql += LinkWithTable;
+            i.putCaidan += putCaidan;
         }
 
-        void LinkWithTable()
+        void putCaidan(ref bool isVegetables)
         {
-            SqlGetShicaiTable?.Invoke(
+            string[,] caidan = new string[caiPunum, 2];//菜单，放名字和菜系
+            int[] strlens;//用于输出表格对齐
+            char isVeg;
+            string sc = "",//库存中有的食材
+            scc;//主料，配料
+            bool canPut;//菜谱符合输出条件为true
+
+
+            int i, j, k;
+
+            if (isVegetables)
+            {
+                isVeg = '素';
+            }
+            else
+            {
+                isVeg = '荤';
+            }
+
+            //初始化
+            caidan[0, 0] = "菜名";
+            caidan[0, 1] = "菜系";
+            strlens = new int[] { 2, 2 };
+
+            //加载库存中有的食材
+            for (i = 1; i <= inventoryNum; i++)
+            {
+                sc += sc.Contains(inventory[i, 0]) ? "" : inventory[i, 0];//防止食材重复
+            }
+
+
+
+            /*
+            caiPunum = 0;
+            caiPu[0, 0] = "名称";
+            caiPu[0, 1] = "主料";
+            caiPu[0, 2] = "调料";
+            caiPu[0, 4] = "菜系";
+            caiPu[0, 5] = "荤素";
+            */
+
+
+            //内嵌函数，用于查找库存中是否有主，配料
+            void findKucun(int num)
+            {
+
+                scc = "";
+                foreach (char c in caiPu[i, num])
+                {
+                    if (!canPut)
+                        break;
+                    if (c == ' ' || c == '无')
+                        continue;
+                    if (c == ',' || c == '，')
+                    {
+                        if (!(canPut = sc.Contains(scc) ? true : false))
+                            break;
+                        else
+                        {
+                            scc = "";
+                            continue;
+                        }
+                    }
+                    scc += c;
+                }
+
+            }
+
+
+            j = 0;//记录菜单行数
+            //查找菜单
+            for (i = 1; i <= caiPunum; i++)
+            {
+                //判断荤素
+                if (!caiPu[i, 5].Contains(isVeg))
+                    continue;
+
+                canPut = true;
+                //筛选
+                //匹配主料
+                findKucun(1);
+                findKucun(2);
+
+
+
+
+
+
+
+                if (canPut)
+                {
+                    j++;
+                    caidan[j, 0] = caiPu[j, 0];
+                    caidan[j, 1] = caiPu[j, 4];
+                    strlens[0] = strlens[0] > caiPu[j, 0].Length ? strlens[0] : caiPu[j, 0].Length;
+                    strlens[1] = strlens[1] > caiPu[j, 4].Length ? strlens[1] : caiPu[j, 5].Length;
+
+                }
+
+
+
+
+            }
+
+
+
+            Clear();
+            putTable(caidan, strlens);
+
+
+
+
+
+        }
+
+        bool LinkWithTable()
+        {
+            return (
+                (
+                    SqlGetShicaiTable?.Invoke(
+
             shicai, ref shicainum,
          supplier, ref supplierNum,
          sourceOfGoods, ref sogNum,
          inventory, ref inventoryNum,
-        strlens);
-
-        SqlGetCaipuTable?.Invoke(caiPu,ref caiPunum,strlens[4]);
+        strlens) ?? false) 
+        && 
+        
+        (SqlGetCaipuTable?.Invoke(caiPu, ref caiPunum, strlens[4]) ?? false));
         }
 
 
@@ -147,7 +270,7 @@ namespace caidan
             {
                 a = base.putTable(ChooseTable(a), this.strlens[a]);
             }
-            catch (Exception )
+            catch (Exception)
             {
 
             }
@@ -214,7 +337,7 @@ namespace caidan
 
 
             //更新数据库
-            if (!(SqlUpdate?.Invoke(str, num)??false))
+            if (!(SqlUpdate?.Invoke(str, num) ?? false))
             {
                 pause();
                 return false;
@@ -270,7 +393,7 @@ namespace caidan
 
 
             //删数据库
-            if (!(SqlDelete?.Invoke(str, num)??false))
+            if (!(SqlDelete?.Invoke(str, num) ?? false))
             {
                 pause();
                 return false;
@@ -314,7 +437,7 @@ namespace caidan
 
 
             //加据库
-            if (!(SqlInsert?.Invoke(str, num)??false))
+            if (!(SqlInsert?.Invoke(str, num) ?? false))
             {
                 pause();
                 return false;

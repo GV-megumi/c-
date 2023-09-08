@@ -18,8 +18,6 @@ namespace caidan
 
             if (aaa == null)
                 return 1;
-
-
             int i = 0, j = 1;
             int spacenum;//空格数
             int number = 0; //记录str里的数字/字母数
@@ -29,7 +27,8 @@ namespace caidan
             Write("行号    ");
             foreach (string s in aaa)
             {
-                if (s == null)
+                
+                if (s == null||s==" ")
                     break;
 
 
@@ -55,12 +54,14 @@ namespace caidan
 
                 spacenum = strlens[i] - s.Length + 1;
                 //Write(spacenum);
-                while (spacenum != 0)
+                while (spacenum >= 0)
                 {
                     spacenum--;
                     Write("  ");
+                    //pause();
                 }
                 i++;
+                //WriteLine("qweeqewee");
 
 
             }

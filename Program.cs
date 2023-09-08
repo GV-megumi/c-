@@ -38,23 +38,24 @@ namespace asss
                 //a=new Sql();
             }
 
-          //  a.f();
+            //  a.f();
             //Game.f();
 
 
-        UI caiDanUI = new ();
-        ShiCai shiCai = new (caiDanUI);
-        MyFoodSql myFoodSql= new (shiCai);
+            UI caiDanUI = new();
+            ShiCai shiCai = new(caiDanUI);
+            MyFoodSql myFoodSql = new(shiCai);
 
 
 
-        Clear();
 
 
-        caiDanUI.run();
+            Clear();
 
 
-            caiDanUI.pause();
+            caiDanUI.run();
+
+            //caiDanUI.pause();
 
 
 

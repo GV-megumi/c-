@@ -15,13 +15,15 @@ namespace caidan
         int tabnum;
 
         //自定义委托声明，
-        public delegate void MyDel1(ref int a);
+        public delegate void MyDel1<T>(ref T a);
 
         //非标准事件委托，调用
         public delegate T MyDel2<T, R>(R a, int tablenum);
 
         //输出表格
-        public event MyDel1? putTable;
+        public event MyDel1<int>? putTable;
+        public event MyDel1<bool>? putCaidan;
+
 
 
 
@@ -51,13 +53,58 @@ namespace caidan
                 IDCUI();
             }
             else if (key == ConsoleKey.E)
-                ;
+                CaidanUi();
             else if (key == ConsoleKey.R)
                 return;
             else
             {
                 goto backk;
             }
+
+        }
+
+
+
+        void CaidanUi()
+        {
+
+            Clear();
+
+
+            WriteLine("Q:荤菜");
+            WriteLine("W:素菜");
+            WriteLine("E:返回");
+            Write("请键入字母选择：");
+            bool isVegetables;
+        backk:
+            key = Console.ReadKey(intercept: true).Key;
+            if (key == ConsoleKey.Q)
+            {
+                isVegetables = false;
+
+            }
+            else if (key == ConsoleKey.W)
+            {
+                isVegetables = true;
+
+            }
+            else if (key == ConsoleKey.E)
+            {
+                goto backkk;
+            }
+            else
+            {
+                goto backk;
+            }
+
+            putCaidan?.Invoke(ref isVegetables);
+
+            WriteLine("按任意键返回");
+            ReadKey();
+
+        backkk:
+            Clear();
+            mainui();
 
         }
 
@@ -73,7 +120,7 @@ namespace caidan
         backk:
             key = Console.ReadKey(intercept: true).Key;
 
-            
+
 
             if (key == ConsoleKey.Q)
                 tabnum = 0;
@@ -133,7 +180,10 @@ namespace caidan
             else if (key == ConsoleKey.R)
             {
                 Clear();
-                shicaiui();
+                if (tabnum == 4)
+                    mainui();
+                else
+                    shicaiui();
             }
             else
             {
@@ -509,7 +559,7 @@ namespace caidan
 
 
 
-        public delegate void Link();
+        public delegate bool Link();
         public event Link? LinkToSql;
 
 
@@ -517,9 +567,17 @@ namespace caidan
 
         public void run()
         {
-            LinkToSql?.Invoke();
+            if (!LinkToSql?.Invoke() ?? false)
+            {
+                ForegroundColor = ConsoleColor.Red;
 
-            mainui();
+                WriteLine("\n\n\n发生错误,未获取到相关信息：连接数据库失败");
+                ResetColor(); // 重置颜色为默认
+                pause();
+                Clear();
+            }
+            else
+                mainui();
 
 
         }
