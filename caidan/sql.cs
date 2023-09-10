@@ -424,17 +424,16 @@ namespace caidan
                             while (reader.Read())
                             {
                                 shicainum++;
+
+
+
+
                                 // 从结果集中获取数据并处理
 
 
-                                shicai[shicainum, 0] = reader.GetString("name");
-                                shicai[shicainum, 1] = reader.GetString("P_C");
-                                shicai[shicainum, 2] = reader.GetString("I_N_D");
-                                shicai[shicainum, 3] = reader.GetString("S_C");
-                                shicai[shicainum, 4] = reader.GetString("NUTR");
-
                                 for (int i = 0; i < 5; i++)
                                 {
+                                    shicai[shicainum, i] = reader.GetString(sqlHand[0][i]);
                                     if (shicai[shicainum, i].Length > strlens[0][i])
                                     {
                                         strlens[0][i] = shicai[shicainum, i].Length;
@@ -459,15 +458,15 @@ namespace caidan
                             while (reader.Read())
                             {
                                 supplierNum++;
+
+
+
+
                                 // 从结果集中获取数据并处理
-                                supplier[supplierNum, 0] = reader.GetString("M_F");
-                                supplier[supplierNum, 1] = reader.GetString("address");
-                                supplier[supplierNum, 2] = reader.GetString("poo");
-                                supplier[supplierNum, 3] = reader.GetString("FPLN");
-                                supplier[supplierNum, 4] = reader.GetString("PSN");
 
                                 for (int i = 0; i < 5; i++)
                                 {
+                                    supplier[supplierNum, i] = reader.GetString(sqlHand[3][i]);
                                     if (supplier[supplierNum, i].Length > strlens[3][i])
                                     {
                                         strlens[3][i] = supplier[supplierNum, i].Length;
@@ -495,12 +494,16 @@ namespace caidan
                             while (reader.Read())
                             {
                                 sogNum++;
+
+
+
                                 // 从结果集中获取数据并处理
-                                sourceOfGoods[sogNum, 0] = reader.GetString("NAME");
-                                sourceOfGoods[sogNum, 1] = reader.GetString("M_F");
+
+  
 
                                 for (int i = 0; i < 2; i++)
                                 {
+                                    sourceOfGoods[sogNum, i] = reader.GetString(sqlHand[2][i]);
                                     if (sourceOfGoods[sogNum, i].Length > strlens[2][i])
                                     {
                                         strlens[2][i] = sourceOfGoods[sogNum, i].Length;
@@ -531,26 +534,10 @@ namespace caidan
                             {
                                 inventoryNum++;
                                 // 从结果集中获取数据并处理
-
-                                /*
-                                            inventory[0, 0] = "品名";
-            inventory[0, 1] = "生产日期";
-            inventory[0, 2] = "净含量";
-            inventory[0, 3] = "保质期";
-
-            inventory[0, 4] = "数量";
-            inventory[0, 5] = "供应商";
-            */
-                                inventory[inventoryNum, 0] = reader.GetString("NAME");
-                                inventory[inventoryNum, 1] = reader.GetString("date");
-                                inventory[inventoryNum, 2] = reader.GetString("nc");
-                                inventory[inventoryNum, 3] = reader.GetString("sl");
-                                inventory[inventoryNum, 4] = reader.GetString("number");
-                                inventory[inventoryNum, 5] = reader.GetString("M_F");
-
-
                                 for (int i = 0; i < 6; i++)
                                 {
+                                    inventory[inventoryNum, i] = reader.GetString(sqlHand[1][i]);
+
                                     if (inventory[inventoryNum, i].Length > strlens[1][i])
                                     {
                                         strlens[1][i] = inventory[inventoryNum, i].Length;
@@ -642,10 +629,11 @@ namespace caidan
                 // 获取程序目录下的 SQL 脚本文件路径
                 string scriptFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "food.sql");
 
-                while(!File.Exists(scriptFilePath))
+
+                while (!File.Exists(scriptFilePath))
                 {
                     WriteLine("错误，未找到指定脚本，请将：food.sql 放到以下文件夹中 ：");
-                    WriteLine(AppDomain.CurrentDomain.BaseDirectory+"\n按任意键继续");
+                    WriteLine(AppDomain.CurrentDomain.BaseDirectory + "\n按任意键继续");
                     ReadKey();
                     Clear();
 
