@@ -65,7 +65,7 @@ DROP TABLE IF EXISTS `SUP`;
 CREATE TABLE `SUP` (
   `M_F` char(20) NOT NULL,
   `address` varchar(40) DEFAULT NULL,
-  
+  `poo` varchar(40) DEFAULT NULL,
   `FPLN` varchar(40) DEFAULT NULL,
   `PSN` varchar(40) DEFAULT NULL,
   
@@ -79,18 +79,18 @@ CREATE TABLE `SUP` (
 -- Records of SUP
 -- ----------------------------
 BEGIN;
-INSERT INTO `SUP` (`M_F`,`address`,`FPLN`,`PSN`) 
-VALUES ('甲','甲市','20230901','01');
-INSERT INTO `SUP` (`M_F`,`address`,`FPLN`,`PSN`) 
-VALUES ('乙','乙市','20230902','02');
-INSERT INTO `SUP` (`M_F`,`address`,`FPLN`,`PSN`) 
-VALUES ('丙','丙市','20230903','03');
-INSERT INTO `SUP` (`M_F`,`address`,`FPLN`,`PSN`) 
-VALUES ('丁','丁市','20230904','04');
-INSERT INTO `SUP` (`M_F`,`address`,`FPLN`,`PSN`) 
-VALUES ('戊','戊市','20230905','05');
-INSERT INTO `SUP` (`M_F`,`address`,`FPLN`,`PSN`) 
-VALUES ('己','己市','20230906','06');
+INSERT INTO `SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`) 
+VALUES ('甲','甲市','甲农业基地','20230901','01');
+INSERT INTO `SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`) 
+VALUES ('乙','乙市','乙农业基地','20230902','02');
+INSERT INTO `SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`) 
+VALUES ('丙','丙市','丙农业基地','20230903','03');
+INSERT INTO `SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`) 
+VALUES ('丁','丁市','丁农业基地','20230904','04');
+INSERT INTO `SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`) 
+VALUES ('戊','戊市','戊农业基地','20230905','05');
+INSERT INTO `SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`) 
+VALUES ('己','己市','己农业基地','20230906','06');
 COMMIT;
 
 
@@ -106,7 +106,6 @@ CREATE TABLE `SOG` (
   `SOG_ID` INT NOT NULL AUTO_INCREMENT,
   `NAME` char(10) NOT NULL,
   `M_F` char(20) NOT NULL,
-  `poo` varchar(40) DEFAULT NULL,
 
   UNIQUE KEY (`SOG_ID`),
   PRIMARY KEY (`NAME`,`M_F`),
@@ -121,21 +120,21 @@ CREATE TABLE `SOG` (
 -- Records of SOG
 -- ----------------------------
 BEGIN;
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('番茄','甲','己农业基地');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('番茄','甲');
 
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('番茄','丁','己农业基地');
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('鸡蛋','甲','己农业基地');
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('青椒','丁','己农业基地');
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('番茄','乙','己农业基地');
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('黄瓜','戊','己农业基地');
-INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
-VALUES ('白糖','甲','己农业基地');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('番茄','丁');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('鸡蛋','甲');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('青椒','丁');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('番茄','乙');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('黄瓜','戊');
+INSERT INTO `SOG` (`NAME`,`M_F`) 
+VALUES ('白糖','甲');
 COMMIT;
 
 

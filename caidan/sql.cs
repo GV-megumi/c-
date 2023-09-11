@@ -21,8 +21,8 @@ namespace caidan
 
             sqlHand[0] = new string[] { "name", "P_C", "I_N_D", "S_C", "NUTR" };
             sqlHand[1] = new string[] { "NAME", "date", "nc", "sl", "number", "M_F" };
-            sqlHand[2] = new string[] { "NAME", "M_F", };
-            sqlHand[3] = new string[] { "M_F", "address", "poo", "FPLN", "PSN" };
+            sqlHand[2] = new string[] { "NAME", "M_F", "poo" };
+            sqlHand[3] = new string[] { "M_F", "address", "FPLN", "PSN" };
             sqlHand[4] = new string[] { "name", "M_I", "S_S", "R_S", "R_C", "M_V" };
 
 
@@ -123,7 +123,7 @@ namespace caidan
 
             for (int i = 0; i < columnnum; i++)
             {
-                if ((i == column)//更新行
+                if ((i == column)//更新行跳过where
                 || (num == 1 && (i == 0 || i == 5))//对库存的特殊照顾
                 )
                     continue;
@@ -328,11 +328,11 @@ namespace caidan
                 case 2:
                     //进货渠道
 
-                    insertQuery += "`SOG` (`NAME`,`M_F`)  VALUES (";
+                    insertQuery += "`SOG` (`NAME`,`M_F`,`poo`)  VALUES (";
                     break;
                 case 3:
                     //商
-                    insertQuery += "`SUP` (`M_F`,`address`,`poo`,`FPLN`,`PSN`)  VALUES (";
+                    insertQuery += "`SUP` (`M_F`,`address`,`FPLN`,`PSN`)  VALUES (";
                     break;
 
                 case 4:
@@ -464,7 +464,7 @@ namespace caidan
 
                                 // 从结果集中获取数据并处理
 
-                                for (int i = 0; i < 5; i++)
+                                for (int i = 0; i < 4; i++)
                                 {
                                     supplier[supplierNum, i] = reader.GetString(sqlHand[3][i]);
                                     if (supplier[supplierNum, i].Length > strlens[3][i])
@@ -501,7 +501,7 @@ namespace caidan
 
   
 
-                                for (int i = 0; i < 2; i++)
+                                for (int i = 0; i < 3; i++)
                                 {
                                     sourceOfGoods[sogNum, i] = reader.GetString(sqlHand[2][i]);
                                     if (sourceOfGoods[sogNum, i].Length > strlens[2][i])

@@ -24,12 +24,12 @@ namespace caidan
 
 
         //进货渠道信息
-        string[,] sourceOfGoods = new string[100, 2];
+        string[,] sourceOfGoods = new string[100, 3];
 
         public int sogNum;
 
         //供应商信息表
-        string[,] supplier = new string[100, 5];
+        string[,] supplier = new string[100, 4];
         public int supplierNum;
 
 
@@ -86,15 +86,15 @@ namespace caidan
             //进货渠道
             sourceOfGoods[0, 0] = "品名";
             sourceOfGoods[0, 1] = "制造商";
-            strlens[2] = new int[] { 2, 3 };
+            sourceOfGoods[0, 2] = "产地";
+            strlens[2] = new int[] { 2, 3,2 };
 
             //供应商
             supplier[0, 0] = "制造商";
             supplier[0, 1] = "地址";
-            supplier[0, 2] = "产地";
-            supplier[0, 3] = "食品生产许可证号";
-            supplier[0, 4] = "产品标准号";
-            strlens[3] = new int[] { 3, 2, 2, 8, 5 };
+            supplier[0, 2] = "食品生产许可证号";
+            supplier[0, 3] = "产品标准号";
+            strlens[3] = new int[] { 3, 2, 8, 5 };
 
 
 
@@ -139,7 +139,7 @@ namespace caidan
             bool canPut;//菜谱符合输出条件为true
 
 
-            int i, j, k;
+            int i, j;
 
             if (isVegetables)
             {
