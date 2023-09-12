@@ -10,9 +10,9 @@ namespace caidan
     class MyFoodSql
     {
 
-        string connectionString;
-        string passwd;
-        string[][] sqlHand = new string[5][];
+        string connectionString;//数据库连接
+        string passwd;//密码
+        string[][] sqlHand = new string[5][];//记录mysql各表属性名
 
         public MyFoodSql(ShiCai shiCai)
         {
@@ -26,7 +26,7 @@ namespace caidan
             sqlHand[4] = new string[] { "name", "M_I", "S_S", "R_S", "R_C", "M_V" };
 
 
-
+            //订阅事件
             shiCai.SqlDelete += Delete;
             shiCai.SqlInsert += Insert;
             shiCai.SqlUpdate += Update;
@@ -37,6 +37,13 @@ namespace caidan
         }
 
         //检查是否有单引号
+        /*
+        用于检查数据，防止sql语句出错
+        防止用户输入多空格 
+        若用户输入单引号，需要再加一个单引号（mysql转义）
+        若数据为char型，则需用''括起来，若为int型则不需要
+        */
+
         string CheckData(string data, bool isint)
         {
 
@@ -73,7 +80,12 @@ namespace caidan
 
 
 
-
+        /*
+        相应shicai的Do事件
+        将传递的数据进行处理并向mysql发送对应语句
+        如果错误则输出错误语句并作出一定解释
+        向shicai返回修改结果（true/false）
+        */
         bool Update(string[] str, int num)
         {
             int column, columnnum; //要修改的列号，总列数
@@ -87,8 +99,6 @@ namespace caidan
 
             //判断sql属性类型是否为int
             data = CheckData(str[column], num == 1 && column == 4);
-
-            // 要执行的删除操作 SQL 语句
             switch (num)
             {
                 case 0:
@@ -102,8 +112,6 @@ namespace caidan
                     break;
                 case 2:
                     //进货渠道
-                    //sourceOfGoods[0, 0] = "品名";
-                    //sourceOfGoods[0, 1] = "制造商";
                     updateQuery += " sog SET ";
                     break;
                 case 3:
@@ -128,7 +136,7 @@ namespace caidan
                 )
                     continue;
 
-                //  后一项为数据是int的条件
+                //  后一项为数据是int的条件（num == 1 && i == 4  时 data为一个int，不需要加单引号
                 data = CheckData(str[i], num == 1 && i == 4);
 
 
@@ -138,7 +146,7 @@ namespace caidan
 
             }
 
-            updateQuery = updateQuery.Substring(0, updateQuery.Length - 3);
+            updateQuery = updateQuery.Substring(0, updateQuery.Length - 3);//减去最后一个and
 
             //对库存的特殊照顾
             if (num == 1)
@@ -148,17 +156,6 @@ namespace caidan
 
             //WriteLine(updateQuery);
             //ReadKey();
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -264,18 +261,14 @@ namespace caidan
 
 
 
-
             //ReadKey();
-
-
-
-
-
-
 
 
             return true;
         }
+
+
+
 
 
 
@@ -284,9 +277,6 @@ namespace caidan
 
 
             string insertQuery = "INSERT INTO "; ;
-
-
-
 
             // 要执行操作 SQL 语句
             switch (num)
@@ -299,14 +289,6 @@ namespace caidan
                 case 1:
                     //库存
                     /*
-                    inventory[0, 0] = "品名";
-                    inventory[0, 1] = "生产日期";
-                    inventory[0, 2] = "净含量";
-                    inventory[0, 3] = "保质期";
-                    inventory[0, 4] = "数量";
-                    inventory[0, 5] = "供应商";
-
-
                     INSERT INTO 
                     `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) VALUES (
                     (SELECT SOG_ID FROM sog WHERE 
@@ -352,10 +334,6 @@ namespace caidan
 
 
 
-
-
-
-
         link:
 
             try
@@ -393,7 +371,8 @@ namespace caidan
 
 
 
-
+        /*将食材的四个表信息全部写入内存，同时记录每行
+        */
         bool SqlGetShicai(
             string[,] shicai, ref int shicainum,
             string[,] supplier, ref int supplierNum,
@@ -702,7 +681,7 @@ namespace caidan
                     connection.Open();
 
                     // 执行查询
-                    WriteLine("正在加载食材相关数据：");
+                    WriteLine("正在加载菜谱相关数据：");
                     query = "SELECT * FROM rmm";
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
@@ -725,7 +704,7 @@ namespace caidan
                             }
                         }
                     }
-                    WriteLine("食材数据加载完成");
+                    WriteLine("菜谱数据加载完成");
 
 
 

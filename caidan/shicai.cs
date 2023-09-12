@@ -45,6 +45,9 @@ namespace caidan
         //用于表格对齐
         int[][] strlens = new int[5][];
 
+        //sql怎删改 委托
+        public delegate T MySqlDel<T, R, S>(R a, S b);
+
 
 
 
@@ -61,7 +64,7 @@ namespace caidan
         public delegate bool MySQLGetCaipuTableDel(string[,] caiPU, ref int Caipunum, int[] strlens);
         public event MySQLGetCaipuTableDel? SqlGetCaipuTable;
 
-                bool LinkWithTable()
+        bool LinkWithTable()
         {
             return (
                 (
@@ -71,9 +74,9 @@ namespace caidan
          supplier, ref supplierNum,
          sourceOfGoods, ref sogNum,
          inventory, ref inventoryNum,
-        strlens) ?? false) 
-        && 
-        
+        strlens) ?? false)
+        &&
+
         (SqlGetCaipuTable?.Invoke(caiPu, ref caiPunum, strlens[4]) ?? false));
         }
 
@@ -107,7 +110,7 @@ namespace caidan
             sourceOfGoods[0, 0] = "品名";
             sourceOfGoods[0, 1] = "制造商";
             sourceOfGoods[0, 2] = "产地";
-            strlens[2] = new int[] { 2, 3,2 };
+            strlens[2] = new int[] { 2, 3, 2 };
 
             //供应商
             supplier[0, 0] = "制造商";
@@ -160,7 +163,7 @@ namespace caidan
         遇到空格/无跳过，其他加入一个string scc中，遇到逗号，则说明scc中记录了一个食材，
         判断该sc是否有该子串，没有就修改canput状态信息为false，退出
         有则继续查找，
-        最终以canput状态判断该菜是否能够上菜单
+        最终以canput状态判断该菜是否能够上菜单,能上则加入菜单专用数组，最后传给puttable输出菜单表格
         */
         void putCaidan(ref bool isVegetables)
         {
@@ -191,7 +194,7 @@ namespace caidan
             //加载库存中有的食材
             for (i = 1; i <= inventoryNum; i++)
             {
-                sc += sc.Contains(inventory[i, 0]) ? "" : inventory[i, 0]+",";//防止食材重复
+                sc += sc.Contains(inventory[i, 0]) ? "" : inventory[i, 0] + ",";//防止食材重复
             }
 
 
@@ -278,7 +281,7 @@ namespace caidan
 
 
 
-        //输出表格
+        //输出表格用于调用父类输出表格，响应ui的puttable事件
         void putTable(ref int a)
         {
             try
@@ -292,6 +295,26 @@ namespace caidan
 
         }
 
+
+        /*
+        响应ui的calldelete事件，接受一个string[] 和一个int，
+        string[]中有三个数据，分别是更新数据的位置（行，列）和更新的内容
+        其中前两个数据需要类型转化为int，同时在这里也对行号和列号做越界判断
+        （前端ui已经判断过了，此处再判断一次）
+        第二个参数int是用于选择表格，确定要修改的是哪个表。
+
+        新建一个srting[] 数组，用于存储要修改的表的对应行的全部数据，
+        同时把更新的数据存入；需注意：这个数组的长度比对应表格的列数多一个，
+        这多出来的一个用于向Sql传递数据，告知sql是哪一列数据被更改了
+
+        然后发布sqldelete事件，向sql传递两个参数
+        一个是上面说的包含被更改行的整行已被更改的数据和一个记录是那一列被更改的值的数组
+        还有一个是一个int用于确定更改的是哪个表
+
+        该事件返回一个bool，若为true则继续更改内存中的二维数组，
+        并返回ttrue告知ui修改成功
+        若为false则只返回false告知ui修改失败
+        */
         public event MySqlDel<bool, string[], int>? SqlUpdate;
         bool DoUpdate(string[] updateData, int num)
         {
@@ -364,6 +387,11 @@ namespace caidan
 
             table[row, column] = updateData[2];
 
+            strlens[num][column]= 
+            strlens[num][column]>updateData[2].Length 
+            ?strlens[num][column] 
+            :updateData[2].Length;
+
 
 
 
@@ -375,8 +403,14 @@ namespace caidan
 
 
 
-        //sql怎删改 委托
-        public delegate T MySqlDel<T, R, S>(R a, S b);
+        /*
+        与Doupdate类似
+
+        发布的事件SqlDelete向sql传递两个参数
+        第二个用于选表
+        第一个记录删除的整行信息（只记录整行信息）
+        删除内存中的表信息时，只需向上覆盖即可
+        */
         public event MySqlDel<bool, string[], int>? SqlDelete;
         bool DoDelete(int row, int num)
         {
@@ -432,7 +466,11 @@ namespace caidan
 
 
 
-
+        /*
+        与dodelete类似
+        事件Sqlinsert与sqldelete传递参数一样
+        内存中的数新增时只需在某尾添加即可。
+        */
         public event MySqlDel<bool, string[], int>? SqlInsert;
 
         bool DoInsert(string[] str, int num)
@@ -465,6 +503,7 @@ namespace caidan
             for (i = 0; i < str.Length; i++)
             {
                 table[tablenum, i] = str[i];
+                strlens[num][i]=strlens[num][i]>str[i].Length?strlens[num][i]:str[i].Length;
             }
 
 
@@ -485,7 +524,7 @@ namespace caidan
 
 
 
-
+        //用于选择表格
         string[,] ChooseTable(int a)
         {
 
@@ -511,7 +550,7 @@ namespace caidan
 
         }
 
-
+        //用于选择对应表格的总行数，传址
         ref int ChooseTableCount(int num)
         {
             switch (num)

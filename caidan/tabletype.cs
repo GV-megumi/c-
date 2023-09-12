@@ -50,17 +50,14 @@ namespace caidan
                 Write(s);
 
                 number = putspace(s);
-                while (number != 0)
+                spacenum = strlens[i] - s.Length;
+                while (number >= 0)
                 {
                     Write(" ");
                     number--;
                 }
 
 
-
-
-
-                spacenum = strlens[i] - s.Length + 1;
                 //Write(spacenum);
                 while (spacenum >= 0)
                 {
