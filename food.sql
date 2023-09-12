@@ -136,6 +136,20 @@ INSERT INTO `SOG` (`NAME`,`M_F`,`poo`)
 VALUES ('黄瓜','戊','己农业基地');
 INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
 VALUES ('白糖','甲','己农业基地');
+
+
+
+INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
+VALUES ('大葱','甲','己农业基地');
+INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
+VALUES ('食用油','甲','己农业基地');
+INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
+VALUES ('盐','甲','己农业基地');
+INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
+VALUES ('味精','甲','己农业基地');
+INSERT INTO `SOG` (`NAME`,`M_F`,`poo`) 
+VALUES ('鸡精','甲','己农业基地');
+
 COMMIT;
 
 
@@ -182,6 +196,17 @@ INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`)
 VALUES ( 01,'2023.08.02','100g','60天',10);
 INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) 
 VALUES ( 07,'2023.08.02','100g','60天',10);
+INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) 
+VALUES ( 08,'2023.08.02','100g','60天',10);
+INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) 
+VALUES ( 9,'2023.08.02','100g','60天',10);
+INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) 
+VALUES ( 10,'2023.08.02','100g','60天',10);
+INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) 
+VALUES ( 11,'2023.08.02','100g','60天',10);
+
+INSERT INTO `inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) 
+VALUES ( 12,'2023.08.02','100g','60天',10);
 COMMIT;
 
 

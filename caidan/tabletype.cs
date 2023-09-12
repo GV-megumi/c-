@@ -13,6 +13,14 @@ namespace caidan
 
 
         //输出表格
+
+        /*
+        用于输出表格
+        获取表格和 该表每列最长的字符串的长度（用于对其）
+        用foreach输出
+        遇到未初始化的string退出
+
+        */
         public int putTable(string[,] aaa, int[] strlens)
         {
 
@@ -78,11 +86,13 @@ namespace caidan
 
 
         //返回子符串中的数字和字母以及标点符号的数量（不包含中文字符）
+        /*
+        辅助表格对齐
+        中文占两个字符位
+        所以需要判断非中文的个数，在输出后补上相应数量的空格
+        */
         public int putspace(string inputString)
         {
-
-
-
             // 使用正则表达式匹配包含字母、数字和标点符号的子串，排除中文字符
             string pattern = @"[a-zA-Z0-9\p{P}]+";
             MatchCollection matches = Regex.Matches(inputString, pattern);

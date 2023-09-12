@@ -14,10 +14,10 @@ namespace caidan
 
         int tabnum;
 
-        //自定义委托声明，
+        //自定义委托声明，用于输出表格
         public delegate void MyDel1<T>(ref T a);
 
-        //非标准事件委托，调用
+        //非标准事件委托，用于发布增删改事件
         public delegate T MyDel2<T, R>(R a, int tablenum);
 
         //输出表格
@@ -199,7 +199,22 @@ namespace caidan
 
 
 
+        //更新事件
         public event MyDel2<bool, string[]>? CallUpdate;
+        //更新函数 
+        /*
+        shicai的DoUpdate订阅了事件CallUpdate，当该事件被发布时，会自动调用食材的DoUpdat
+        先调用puttable事件获取要更新的表的总行数，
+        然后调用Gettablehand事件获取表头，此时也知道了该表的列数，
+
+        让用户输入行和列，以选中要更新的数据的位置
+        此处会做出行列限制，以免输入错误
+        然后发布CallUpdate事件，向shicai传递一个
+        updateData数组，记录了要修改的值的位置及修改内容
+        还有一个int数，用于选择修改的表是哪个。
+        callUpdate事件返回一个bool类型，用以判断是否修改成功
+        对更新的剩下操作会交给shicai的DoUpdate和sql的Sqlupdate去做
+        */
         void Update()
         {
 
@@ -213,7 +228,6 @@ namespace caidan
 
             putTable?.Invoke(ref rowmax);
             rowmax = 0 - rowmax;
-
             if (rowmax == -1)
             {
                 WriteLine("错误：未获取到表格,将返回到主菜单");
@@ -257,6 +271,7 @@ namespace caidan
 
             //获取表头
             Clear();
+            //gettablehand只需传递一个参数tabnum，这里有两个参数是不想为该事件单独声明委托，  第一个参数-1没有任何意义
             if ((hand = GetTableHand?.Invoke(-1, tabnum)) == null)
             {
                 WriteLine("ERROR:未获取到表头");
@@ -294,7 +309,7 @@ namespace caidan
                 return;
             }
 
-            //对库存表的单独照顾：库存不可以改 食材名和供应商
+            //对库存表的单独照顾：库存不可以改 食材名和供应商，
             if (tabnum == 1 && (column == 0 || column == 5))
             {
                 WriteLine("此项不可更改");
@@ -306,16 +321,12 @@ namespace caidan
 
 
 
-
-
-
             if (column >= hand.Length || column < 0)
             {
                 //Clear();
                 Write("错误：没有该列。  ");
                 goto backkk;
             }
-
 
 
             WriteLine($"[{row},{column}]");
@@ -392,8 +403,16 @@ namespace caidan
 
 
 
-
+        //删除事件
         public event MyDel2<bool, int>? CallDelete;
+        /*
+        与update类似：获取要删除的行，发布Calldelete事件
+
+        calldelete向Dodelete传递两个int
+        一个所删除的行
+        一个所选择的表
+        返回类型为bool
+        */
 
         void Delete()
         {
@@ -461,14 +480,32 @@ namespace caidan
 
         }
 
-        //用于获取表头
+        //事件，用于获取表头
         public event MyDel2<string[], int>? GetTableHand;
 
 
 
 
-
+        //事件，用于发布增加
         public event MyDel2<bool, string[]>? CallInsert;
+
+        /*
+        与Update类似：获取要增加的信息，发布Calldelete事件
+        不同之处：
+        insert需要单独获取对应表格的表头，以便用户知道该输入什么信息
+        所以需要事先发布GetTableHand事件，
+        该事件传递两个参数
+        第一个参数无意义，只因声明该事件所用到的委托需要传递两个参数所以存在
+        第二个参数为int，用于选中表格
+        该事件返回一个string[]类，存储了表头
+
+        用户输入具体列的值时，会直接替换掉表头对应列的值，（可以少一个string[]的声明）
+        Callinsert
+        传递两个参数：
+        一个string[]用于记录增加内容
+        一个int用于选表
+        返回bool类型
+        */
 
         void Insert()
         {
@@ -581,7 +618,6 @@ namespace caidan
             if (!LinkToSql?.Invoke() ?? false)
             {
                 ForegroundColor = ConsoleColor.Red;
-
                 WriteLine("\n\n\n发生错误,未获取到相关信息：连接数据库失败");
                 ResetColor(); // 重置颜色为默认
                 pause();

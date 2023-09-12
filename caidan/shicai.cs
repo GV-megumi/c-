@@ -45,6 +45,9 @@ namespace caidan
         //用于表格对齐
         int[][] strlens = new int[5][];
 
+
+
+
         //sql获取表格委托
 
         public delegate bool MySqlGetShicaiTable(
@@ -57,6 +60,23 @@ namespace caidan
 
         public delegate bool MySQLGetCaipuTableDel(string[,] caiPU, ref int Caipunum, int[] strlens);
         public event MySQLGetCaipuTableDel? SqlGetCaipuTable;
+
+                bool LinkWithTable()
+        {
+            return (
+                (
+                    SqlGetShicaiTable?.Invoke(
+
+            shicai, ref shicainum,
+         supplier, ref supplierNum,
+         sourceOfGoods, ref sogNum,
+         inventory, ref inventoryNum,
+        strlens) ?? false) 
+        && 
+        
+        (SqlGetCaipuTable?.Invoke(caiPu, ref caiPunum, strlens[4]) ?? false));
+        }
+
 
 
 
@@ -129,11 +149,24 @@ namespace caidan
             i.putCaidan += putCaidan;
         }
 
+
+        /*
+        输出菜单，根据食材库存、饮食需求（荤素）、菜谱等约束条件自动生成菜单，
+        没有根据菜系来分类，而是直接输出了该菜的菜系
+        判断是否有库存的方法：
+        将库存中有的所有的食材名加起来组成一个字符串sc
+        然后用一个内嵌函数查找库存中是否有所有食材
+        具体步骤：逐字符浏览菜谱的主料/配料
+        遇到空格/无跳过，其他加入一个string scc中，遇到逗号，则说明scc中记录了一个食材，
+        判断该sc是否有该子串，没有就修改canput状态信息为false，退出
+        有则继续查找，
+        最终以canput状态判断该菜是否能够上菜单
+        */
         void putCaidan(ref bool isVegetables)
         {
             string[,] caidan = new string[caiPunum, 2];//菜单，放名字和菜系
             int[] strlens;//用于输出表格对齐
-            char isVeg;
+            char isVeg;//是否是素菜
             string sc = "",//库存中有的食材
             scc;//主料，配料
             bool canPut;//菜谱符合输出条件为true
@@ -158,7 +191,7 @@ namespace caidan
             //加载库存中有的食材
             for (i = 1; i <= inventoryNum; i++)
             {
-                sc += sc.Contains(inventory[i, 0]) ? "" : inventory[i, 0];//防止食材重复
+                sc += sc.Contains(inventory[i, 0]) ? "" : inventory[i, 0]+",";//防止食材重复
             }
 
 
@@ -212,12 +245,8 @@ namespace caidan
                 //筛选
                 //匹配主料
                 findKucun(1);
+                //匹配辅料
                 findKucun(2);
-
-
-
-
-
 
 
                 if (canPut)
@@ -238,7 +267,7 @@ namespace caidan
 
 
             Clear();
-            putTable(caidan, strlens);
+            base.putTable(caidan, strlens);
 
 
 
@@ -246,21 +275,7 @@ namespace caidan
 
         }
 
-        bool LinkWithTable()
-        {
-            return (
-                (
-                    SqlGetShicaiTable?.Invoke(
 
-            shicai, ref shicainum,
-         supplier, ref supplierNum,
-         sourceOfGoods, ref sogNum,
-         inventory, ref inventoryNum,
-        strlens) ?? false) 
-        && 
-        
-        (SqlGetCaipuTable?.Invoke(caiPu, ref caiPunum, strlens[4]) ?? false));
-        }
 
 
         //输出表格
