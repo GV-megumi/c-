@@ -81,7 +81,7 @@ namespace caidan
 
 
         /*
-        相应shicai的Do事件
+        响应shicai的Do事件
         将传递的数据进行处理并向mysql发送对应语句
         如果错误则输出错误语句并作出一定解释
         向shicai返回修改结果（true/false）
@@ -193,7 +193,12 @@ namespace caidan
         }
 
 
-
+        /*
+        响应shicai的Do事件
+        将传递的数据进行处理并向mysql发送对应语句
+        如果错误则输出错误语句并作出一定解释
+        向shicai返回修改结果（true/false）
+        */
         bool Delete(string[] s, int num)
         {
             //deleteQuery = "DELETE FROM yourTableName WHERE yourCondition";
@@ -272,6 +277,12 @@ namespace caidan
 
 
 
+        /*
+        响应shicai的Do事件
+        将传递的数据进行处理并向mysql发送对应语句
+        如果错误则输出错误语句并作出一定解释
+        向shicai返回修改结果（true/false）
+        */
         bool Insert(string[] str, int num)
         {
 
@@ -294,8 +305,6 @@ namespace caidan
                     (SELECT SOG_ID FROM sog WHERE 
                     sog.NAME = 'zx' AND sog.M_F = 'zx'),'2023.01','12','12',12);
                     */
-
-
                     insertQuery += "`inv` (  `sog_id`,`date`,`nc`,`sl`,`number`) VALUES ("
                     + "(SELECT SOG_ID FROM sog WHERE sog.NAME = "
                     + CheckData(str[0], false)
@@ -371,7 +380,14 @@ namespace caidan
 
 
 
-        /*将食材的四个表信息全部写入内存，同时记录每行
+        /*
+                
+        响应shicai的事件
+        将食材的四个表信息全部写入内存，同时记录每列字符最大值，用于表格对齐
+        此函数是最先进行数据库连接的函数
+        因此，此函数还负责检查数据库密码是否正确
+        数据库food是否存在，若不存在，则会调用相应函数
+        创建数据库，并执行脚本，创建数据库表。
         */
         bool SqlGetShicai(
             string[,] shicai, ref int shicainum,
@@ -385,7 +401,6 @@ namespace caidan
 
             string query;
             bool back = false;
-
         backk:
             try
             {
@@ -583,6 +598,9 @@ namespace caidan
             return true;
         }
 
+        /*
+        用于在mysql中创建food数据库，并执行脚本创建各表
+        */
         void createDatabase()
         {
 
@@ -663,7 +681,11 @@ namespace caidan
 
 
 
-
+        /*
+                
+        响应shicai的事件
+        将菜谱的表信息全部写入内存，同时记录每列字符最大值，用于表格对齐
+        */
         bool SqlGetCaipu(string[,] caiPU, ref int Caipunum, int[] strlens)
         {
 

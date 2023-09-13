@@ -113,7 +113,7 @@ namespace caidan
 
             WriteLine("Q:食材管理");
             WriteLine("W:库存管理");
-            WriteLine("E:进货渠道管理：");
+            WriteLine("E:进货渠道管理");
             WriteLine("R:供应商管理");
             WriteLine("T:返回");
             Write("请键入字母选择：");
