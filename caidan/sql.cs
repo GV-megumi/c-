@@ -4,7 +4,7 @@ using static System.Console;
 using MySql.Data.MySqlClient;
 using System.Text;
 
-
+//dotnet add package MySql.Data
 namespace caidan
 {
     class MyFoodSql

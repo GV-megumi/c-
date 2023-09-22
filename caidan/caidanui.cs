@@ -9,9 +9,7 @@ namespace caidan
     {
         //输入按键
         ConsoleKey key;
-        //表格
-
-
+        //表格序号
         int tabnum;
 
         //自定义委托声明，用于输出表格
@@ -147,6 +145,7 @@ namespace caidan
 
         }
 
+        //用于输出表格并让用户选择增删改
         void IDCUI()
         {
             Clear();

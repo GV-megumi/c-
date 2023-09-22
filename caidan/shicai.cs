@@ -64,6 +64,8 @@ namespace caidan
         public delegate bool MySQLGetCaipuTableDel(string[,] caiPU, ref int Caipunum, int[] strlens);
         public event MySQLGetCaipuTableDel? SqlGetCaipuTable;
 
+
+        //用于获取表格（向mysql请求）
         bool LinkWithTable()
         {
             return (
@@ -135,10 +137,6 @@ namespace caidan
             inventoryNum = 0;
             sogNum = 0;
             supplierNum = 0;
-
-
-
-
 
 
 
