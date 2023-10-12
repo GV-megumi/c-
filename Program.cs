@@ -34,7 +34,7 @@ namespace asss
                 //a= new chapter10_12();
                 //a= new chapter13();
                 //a= new chapter7();
-                a = new chapter15();
+                a = new chapter20();
                 //a=new Sql();
             }
 
@@ -53,6 +53,8 @@ namespace asss
             */
 
             //caiDanUI.pause();
+
+            a.pause();
 
 
 
