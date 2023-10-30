@@ -14,16 +14,7 @@ namespace Nchapter18
         void PrintType(T name);
     }
 
-    static class C
-    {
-        //类cb的扩展方法
-        public static void PrintType3<T, S>(this Cb<T, S> cb, T t) where T : struct where S : struct
-        {
-            cb.PrintType2<T>(t);
 
-        }
-
-    }
 
     class Ca : Imyi<int>
     {
@@ -55,6 +46,19 @@ namespace Nchapter18
 
     }
 
+
+    static class C
+    {
+        //类cb的扩展方法
+        public static void PrintType3<T, S>(this Cb<T, S> cb, T t) 
+        where T : struct 
+        where S : struct
+        {
+            cb.PrintType2<T>(t);
+
+        }
+
+    }
     //泛型委托
     delegate void MyD1<T>(T v);
     delegate T MyD2<T,R>(R a,R b);

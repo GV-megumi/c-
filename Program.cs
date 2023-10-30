@@ -17,6 +17,22 @@ namespace asss
     class Program
     {
 
+        public static void putCaidan()
+        {
+
+
+            UI caiDanUI = new();
+            ShiCai shiCai = new(caiDanUI);
+            MyFoodSql myFoodSql = new(shiCai);
+            Clear();
+            caiDanUI.run();
+
+
+            caiDanUI.pause();
+
+
+        }
+
         static void Main()
         {
 
@@ -34,27 +50,20 @@ namespace asss
                 //a= new chapter10_12();
                 //a= new chapter13();
                 //a= new chapter7();
-                //a = new chapter20();
+                a = new chapter20();
                 //a=new Sql();
             }
 
-              //a.f();
+            a.f();
             //Game.f();
-
-
+            //putCaidan();
 
             
 
-            UI caiDanUI = new();
-            ShiCai shiCai = new(caiDanUI);
-            MyFoodSql myFoodSql = new(shiCai);
-            Clear();
-            caiDanUI.run();
-            
 
-            //caiDanUI.pause();
 
-            //a.pause();
+
+            a.pause();
 
 
 
