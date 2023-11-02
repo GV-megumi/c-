@@ -9,6 +9,7 @@ using Nchapter18;
 using Nchapter19;
 using GuessWord;
 using caidan;
+using System.Xml.Linq;
 
 
 namespace asss
@@ -54,11 +55,22 @@ namespace asss
                 //a=new Sql();
             }
 
+
+            void shi()
+            {
+         
+            }
+            shi();
+
+
+
+
+
             a.f();
             //Game.f();
             //putCaidan();
 
-            
+
 
 
 

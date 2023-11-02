@@ -20,7 +20,7 @@ class chapter1_6 : Chapter
 
             int[] num = { 1, 2, 3 };
             int a = 1, b = 2;
-            //Console.Write("bbbbbbb{2} and {1}",num); 不可用
+            Console.Write("bbbbbbb{2} and {1}",num,a,12); 
             //Console.WriteLine("bbbbbbb{2} and {3}\n",1,2,3);  3:抛出异常
             Console.WriteLine("bbbbbbb{2} and {1}", 1, 2, 3);
             //格式化数字字符串
