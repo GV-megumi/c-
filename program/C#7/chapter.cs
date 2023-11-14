@@ -9,12 +9,17 @@ namespace chapter{
 
            class Aa
     {
-        const int adsaff=1;
+        public const int adsaff=1;
+        public int a {get;set;}
+        public Aa()
+        {
+            a=10;
+        }
 
 
         private int reftest = 10;
 
-        string aa = "类Aa的成员汴梁";
+        public string aa = "类Aa的成员";
         public void get() { WriteLine(aa); }
 
         public ref int getreftest() { return ref reftest; }

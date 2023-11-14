@@ -10,7 +10,7 @@ namespace chapter
     {
 
         ConsoleKey key = ConsoleKey.F5;
-        bool clicked = false;
+        bool clicked = false;  //资源，用于pv操作
         CancellationTokenSource cts = new();
 
 
@@ -63,6 +63,10 @@ namespace chapter
 
 
         }
+
+
+
+
 
         async Task Writek(CancellationToken c)
         {
@@ -117,6 +121,12 @@ namespace chapter
                 cts.Cancel();
             });
         }
+
+
+
+
+
+
         public override void f()
         {
 

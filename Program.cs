@@ -1,4 +1,6 @@
-﻿
+﻿#define conn
+
+
 using System;
 using static System.Console;
 using System.IO;
@@ -51,9 +53,12 @@ namespace asss
                 //a= new chapter10_12();
                 //a= new chapter13();
                 //a= new chapter7();
-                a = new chapter20_1();
+                a = new chapter25();
                 //a=new Sql();
             }
+
+
+            
 
 
             void shi()
@@ -69,6 +74,15 @@ namespace asss
             a.f();
             //Game.f();
             //putCaidan();
+
+
+
+
+            //chapter25 额外内容
+            //chapter25 asd=new chapter25();
+            //asd.Gvf3();
+
+
 
 
 
