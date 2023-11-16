@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using chapter;
 using Org.BouncyCastle.Math.EC;
 
@@ -77,7 +78,7 @@ namespace chapter
 
 
 
-        [Obsolete("过时2",false)]
+        [Obsolete("过时2", false)]
         public void WarningTip2()
         {
             Console.WriteLine("Warning");
@@ -93,6 +94,7 @@ namespace chapter
         public void Gvf2()
         {
             Console.Clear();
+            PrintYellow("Obsolete特性：\n");
             WarningTip1();      //“chapter25.WarningTip1()”已过时:“过时1”
             WarningTip2();      //“chapter25.WarningTip2()”已过时:“过时2”
             //ErrorTip();       //“chapter25.ErrorTip()”已过时:“过时3”
@@ -101,23 +103,73 @@ namespace chapter
         }
 
 
-        //[Conditional("conn")]
+        //Conditional
 
         [Conditional("conn")]
-        public void ConditionalPrint(string s)
+        public void ConditionalPrint(string s) { Console.WriteLine(s+"编译了"); }
 
-        {
-            Console.WriteLine(s);    
-        }
-
-        public  void Gvf3()
+        public void Gvf3([CallerMemberName] string memberName = "")
         {
 
-            ConditionalPrint("编译了");//需要 #define conn 才会调用  作用域在本文件内
+            PrintLn("\n\nConditional特性：\n");
+            ConditionalPrint("调用函数：  ");//需要 #define conn 才会调用  作用域在本文件内
             Console.WriteLine("f3()函数退出");
+
+
+
+
+
             
-            
+            if (memberName == "Gvf2")
+                Gvf4();
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        //调用者信息
+        int lineNumber;
+        public void CallerAttributeTest(
+            string str,
+            [CallerFilePath] string filePath = "",
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memberName = "")
+
+        {
+            Console.WriteLine($"信息： {str}");
+            Console.WriteLine($"文件路径： {filePath}");
+            Console.WriteLine($"代码行数： {lineNumber}");
+            Console.WriteLine($"调用者： {memberName}");
+            this.lineNumber = lineNumber;  //信息可被存在外部
+
+
+
+        }
+
+
+        public void Gvf4()
+        {
+
+            PrintLn("\n\n调用者信息特性：\n", "YellOw");
+
+            CallerAttributeTest("test");
+            Console.WriteLine($"{lineNumber}");
+
+        }
+
+
+
+
+
 
 
 

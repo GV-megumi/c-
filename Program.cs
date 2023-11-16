@@ -1,4 +1,4 @@
-﻿#define conn
+﻿//#define conn
 
 
 using System;
@@ -12,6 +12,7 @@ using Nchapter19;
 using GuessWord;
 using caidan;
 using System.Xml.Linq;
+using Google.Protobuf.Reflection;
 
 
 namespace asss
@@ -58,29 +59,32 @@ namespace asss
             }
 
 
-            
+
 
 
             void shi()
             {
-         
+
+
+                a.pause();
+
             }
-            shi();
+            //shi();
 
 
 
 
 
             a.f();
+
             //Game.f();
             //putCaidan();
+            //extra();
 
 
 
 
-            //chapter25 额外内容
-            //chapter25 asd=new chapter25();
-            //asd.Gvf3();
+
 
 
 
@@ -91,6 +95,17 @@ namespace asss
 
             a.pause();
 
+
+
+        }
+
+        static void extra()
+        {
+            //chapter25 额外内容
+            
+            chapter25 asd=new chapter25();
+            chapter25.PrintLn("chapter25 额外内容");
+            asd.Gvf3();
 
 
         }
