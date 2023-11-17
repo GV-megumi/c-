@@ -104,6 +104,7 @@ namespace chapter
 
         }
 
+        [Obsolete("没用，设计错误",true)]
         async void waitt()
         {
             await Task.Run(() =>
@@ -117,6 +118,7 @@ namespace chapter
         {
             await Task.Run(() =>
             {
+                
 
                 cts.Cancel();
             });
