@@ -16,7 +16,7 @@ namespace caidan
 
         public MyFoodSql(ShiCai shiCai)
         {
-            connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=453986;";
+            connectionString = "Server=localhost;Port=3306;Database=food;Uid=root;Pwd=;";
             passwd = "";
 
             sqlHand[0] = new string[] { "name", "P_C", "I_N_D", "S_C", "NUTR" };
