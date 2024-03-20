@@ -9,7 +9,7 @@ namespace chapter
     class chapter21 : Chapter
     {
 
-        ConsoleKey key = ConsoleKey.F5;
+        ConsoleKey key = ConsoleKey.F4;
         bool clicked = false;  //资源，用于pv操作
         CancellationTokenSource cts = new();
 
@@ -29,7 +29,15 @@ namespace chapter
 
 
                         while (true)
-                        {
+                        {   
+                            if (key == ConsoleKey.F5)
+                                stopp();
+                                //stop();
+                            if (c.IsCancellationRequested)
+                            {
+                                WriteLine("读线程终止");
+                                return;
+                            }
 
                             try
                             {
@@ -39,16 +47,11 @@ namespace chapter
                             {
                                 
                             }
-                            clicked = true;
-                            if (key == ConsoleKey.F5)
-                                stop();
-                            //break;
+                            
 
-                            if (c.IsCancellationRequested)
-                            {
-                                WriteLine("读线程终止");
-                                return;
-                            }
+                            //break;
+                            clicked = true;
+ 
                         }
 
                     }
@@ -122,6 +125,10 @@ namespace chapter
 
                 cts.Cancel();
             });
+        }
+        void stopp()
+        {
+            cts.Cancel();
         }
 
 
